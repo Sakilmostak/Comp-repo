@@ -9,26 +9,37 @@ int main(){
     cin>>n>>k;
 
     vi a(n);
+
     for(int i=0;i<n;i++){
         cin>>a[i];
     }
 
-    int sum=0;
-    int ans;
+    map<int,int> freq;
 
-    for (int i=0;i<k;i++){
-        sum+= a[i];
+    for(int i=0;i<n;i++){
+
+        int presentSize= freq.size();
+        if(freq[a[i]]==0 && presentSize== k){
+            break;
+        }
+        
+        freq[a[i]]++;
     }
 
-    ans= sum;
+    vector<pair<int,int>> ans;
 
-    for(int i=1;i<n-k+1;i++){
-        sum-= a[i-1];
-        sum+= a[i+k-1];
-        ans= min(ans, sum);
+    map<int,int> :: iterator it;
+    for(it=freq.begin();it!= freq.end();it++){
+        if(it->ss!=0){
+            ans.push_back({it->ss, it->ff});
+        }
     }
 
-    cout<<ans<<endl;
+    sort(ans.begin(),ans.end(), greater<pair<int,int>>());
 
-    return 0;
+    vector<pair<int,int>> :: iterator it1;
+
+    for(it1=ans.begin();it1!= ans.end();it1++){
+        cout<<it1->ss<<" "<<it1->ff<<endl;
+    }
 }
