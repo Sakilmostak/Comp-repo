@@ -1,45 +1,73 @@
 #include<bits/stdc++.h>
 using namespace std;
-#define vi vector<int>
-#define ff first
-#define ss second
+
+bool isValid(vector<vector<int>> &board, int row, int column, int key){
+    for(int i=0;i<9;i++){
+        if(board[row][i]==key){
+            return false;
+        }
+
+        if(board[i][column]==key){
+            return false;
+        }
+
+        if(board[3*(row/3)+(i/3)][3*(column/3)+(i%3)]==key){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool solveSudoku(vector<vector<int>> &board){
+    for (int i=0;i<9;i++){
+        for(int j=0;j<9;j++){
+            if(board[i][j]==0){
+                for(int k=1;k<=9;k++){
+                    if(isValid(board,i,j,k)){
+                        board[i][j]=k;
+
+                        if(solveSudoku(board)){
+                            return true;
+                        }
+                        else{
+                            board[i][j]=0;
+                            return false;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 
 int main(){
-    int n,k;
-    cin>>n>>k;
 
-    vi a(n);
+    vector<vector<int>> board 
+       { { 3, 1, 6, 5, 7, 8, 4, 9, 2 },
+         { 5, 2, 9, 1, 3, 4, 7, 6, 8 },
+         { 4, 8, 7, 6, 2, 9, 5, 3, 1 },
+         { 2, 6, 3, 0, 1, 5, 9, 8, 7 },
+         { 9, 7, 4, 8, 6, 0, 1, 2, 5 },
+         { 8, 5, 1, 7, 9, 2, 6, 4, 3 },
+         { 1, 3, 8, 0, 4, 7, 2, 0, 6 },
+         { 6, 9, 2, 3, 5, 1, 8, 7, 4 },
+         { 7, 4, 5, 0, 8, 6, 3, 1, 0 } };
 
-    for(int i=0;i<n;i++){
-        cin>>a[i];
-    }
+    if(solveSudoku(board)){
 
-    map<int,int> freq;
-
-    for(int i=0;i<n;i++){
-
-        int presentSize= freq.size();
-        if(freq[a[i]]==0 && presentSize== k){
-            break;
+        for(int i=0;i<9;i++){
+        for(int j=0;j<9;j++){
+            cout<<board[i][j]<<" ";
         }
-        
-        freq[a[i]]++;
-    }
-
-    vector<pair<int,int>> ans;
-
-    map<int,int> :: iterator it;
-    for(it=freq.begin();it!= freq.end();it++){
-        if(it->ss!=0){
-            ans.push_back({it->ss, it->ff});
+        cout<<endl;
         }
     }
+    
 
-    sort(ans.begin(),ans.end(), greater<pair<int,int>>());
-
-    vector<pair<int,int>> :: iterator it1;
-
-    for(it1=ans.begin();it1!= ans.end();it1++){
-        cout<<it1->ss<<" "<<it1->ff<<endl;
-    }
+    return 0;
+    
 }

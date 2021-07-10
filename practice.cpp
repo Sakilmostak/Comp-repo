@@ -2,6 +2,11 @@
 
 using namespace std;
 
+bool isPowerOfTwo(int x)
+    {
+        return (x && !(x & (x - 1)));
+    }
+
 int lp(int n){
 	n=n | (n>>1);
 	n=n | (n>>2);
@@ -27,7 +32,13 @@ int main(){
 				break;
 			}
 		}
-		int s= lp(c);
+		int s;
+		if(isPowerOfTwo(c)){
+			s=c;
+		}
+		else{
+			s= lp(c);
+		}
 		int k=m;
 		count++;
 		for(int i=0;i<n;i++){
