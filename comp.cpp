@@ -7,35 +7,22 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        string s;
-        cin>>s;
-        
-        string ch=s.substr(0,3);
-        bool see=true;
-        
-        if(ch=="101" || ch=="010"){
-            cout<<"Good"<<endl;
-            see=false;
+        int n,k;
+        cin>>n>>k;
+        int arr[n];
+        int miny=INT_MAX;
+        int sum=0;
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
+            miny= min(miny, arr[i]);
+            sum+=arr[i];
+        }
+
+        if(sum%k>=miny){
+            cout<<"-1"<<endl;
         }
         else{
-            for(int i=3;i<s.size();i++){
-                
-                ch.push_back(s[i]);
-                ch.erase(ch.begin());
-                if(ch=="101" || ch=="010"){
-                    cout<<"Good"<<endl;
-                    see=false;
-                    break;
-                }
-            }
-            
+            cout<<sum/k<<endl;
         }
-        
-        if(see){
-            cout<<"Bad"<<endl;
-        }
-        
-
-        
     }
 }

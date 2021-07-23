@@ -2,56 +2,40 @@
 
 using namespace std;
 
-bool isPowerOfTwo(int x)
-    {
-        return (x && !(x & (x - 1)));
-    }
+class Graph{
+	int V;
+	list<int> *l;
 
-int lp(int n){
-	n=n | (n>>1);
-	n=n | (n>>2);
-	n=n | (n>>4);
-	n=n | (n>>8);
+	public:
 
-	return (n+1)>>1;
-}
+	Graph(int V){
+		this->V=V;
+		l= new list <int>[V];
+	}
+
+	void addEdge(int x,int y){
+		l[x].push_back(y);
+		l[y].push_back(x);
+	}
+
+	void printAdjList(){
+		for(int i=0;i<V;i++){
+			cout<<"Vertex "<<i<<": ";
+			for(auto j: l[i]){
+				cout<<j<<" ";
+			}
+			cout<<endl;
+		}
+	}
+};
 
 int main(){
-	int n=3;
-	int arr[] = {3,6,10};
-	int m=2;
-	int count=0;
-	int xorp;
+	Graph g(4);
+	g.addEdge(0,1);
+	g.addEdge(0,2);
+	g.addEdge(2,3);
+	g.addEdge(1,2);
+	
 
-	do{
-		xorp=0;
-		int c;
-		for(int i=0;i<n;i++){
-			if(arr[i]>0){
-				c= arr[i];
-				break;
-			}
-		}
-		int s;
-		if(isPowerOfTwo(c)){
-			s=c;
-		}
-		else{
-			s= lp(c);
-		}
-		int k=m;
-		count++;
-		for(int i=0;i<n;i++){
-			if(arr[i]>s && k>0){
-				arr[i]^= s;
-				k--;
-			}
-		}
-		for(int i=0;i<n;i++){
-			xorp^=arr[i];
-		}
-	}while(xorp!=0);
-
-	cout<<count<<endl;
-
+	g.printAdjList();
 }
