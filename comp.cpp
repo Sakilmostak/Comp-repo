@@ -4,32 +4,31 @@
 using namespace std;
 
 int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        ll m,n;
-    cin>>m>>n;
-    if(m<=2){
-        cout<<"2"<<endl;
+    int n1,n2,n3;
+    cin>>n1>>n2>>n3;
+    int n= n1+n2+n3;
+    map<int, int> mp;
+
+    for(int i=0;i<n;i++){
+        int x;
+        cin>>x;
+        mp[x]++;
     }
 
-    for(ll i=m;i<=n;i++){
-        if(i%2==1){
-            bool check=true;
-            for(ll j=3;j<=sqrt(i);j+=2){
-                if(i%j==0){
-                    check=false;
-                    break;
-                }
-            }
-            if(check && i!=1){
-                cout<<i<<endl;
-            }
+    int count=0;
+    vector<int> a;
+
+    map<int,int> :: iterator it;
+    for(it=mp.begin();it!=mp.end();it++){
+        if(it->second>=2){
+            count++;
+            a.push_back(it->first);
         }
     }
 
-    cout<<endl;
+    cout<<count<<endl;
+    for(auto i: a){
+        cout<<i<<endl;
     }
-
     return 0;
 }
