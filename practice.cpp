@@ -2,43 +2,59 @@
 
 using namespace std;
 
-class Graph{
-	unordered_map<string,list<pair<string,int>>> l;
+int run_bfs(int s, vector<vector<int>> & adjList, vector<bool> & visited){
+	queue<int> Q;
+	Q.push(s);
+	visited[s]= true;
+	int node_count=0;
+	while(!Q.empty()){
+		s=Q.front();
+		Q.pop();
+		node_count+=1;
 
-	public:
-
-	void addEdge(string x, string y, bool bidir, int wt){
-		l[x].push_back(make_pair(y,wt));
-		if(bidir){
-			l[y].push_back(make_pair(x,wt));
-		}
-	}
-
-	void printAdjList(){
-		for(auto p:l){
-			string Location= p.first;
-			cout<<Location<<"->  ";
-			list<pair<string,int>> nbrs= p.second;
-			
-			for(auto it: nbrs){
-				string dest= it.first;
-				int dist= it.second;
-
-				cout<<dest<<" "<<dist<<",";
+		for(int adjNode: adjList[s]){
+			if(!visited[adjNode]){
+				visited[adjNode]=true;
+				Q.push(adjNode);
 			}
-			cout<<endl;
 		}
 	}
-};
+
+	return node_count;
+}
 
 int main(){
-	Graph g;
-	g.addEdge("A","B",true, 20);
-	g.addEdge("B","D",true, 40);
-	g.addEdge("A","C",true, 10);
-	g.addEdge("C","D",true, 40);
-	g.addEdge("A","D",false, 50);
+	int n; // no of vertices
+	int m; // no of edges
+
+	cin>>n>>m;
+
+	vector<vector<int>> adjList(n);  // Adjacency List representation of Graph
+
+	for(int i=0;i<m;i++){
+		int from, to;
+		cin>>from>>to;
+		adjList[from].push_back(to);
+	}
+
+
+	const int INF = 100000000;
+
+	vector<bool> visited(n, false);
+	
+	// to find the number of connected components
+	int conn_comp_count=0;
+	for(int nd=0;nd<n;nd++){
+		if(!visited[nd]){
+			//run a BFS
+			conn_comp_count+=1;
+			int node_count= run_bfs(nd,adjList,visited);
+			cout<<"We ran BFS from "<<nd<<", node-count = "<<node_count<<endl;
+		}
+	}
+
+	cout<<"\n Total "<<conn_comp_count<<" Connected Components"<<endl;
 	
 
-	g.printAdjList();
+	return 0;
 }

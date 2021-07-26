@@ -4,31 +4,30 @@
 using namespace std;
 
 int main(){
-    int n1,n2,n3;
-    cin>>n1>>n2>>n3;
-    int n= n1+n2+n3;
-    map<int, int> mp;
+    ll t;
+    cin>>t;
+    while(t--){
+       ll n,k;
+       cin>>n>>k;
+       ll si= pow(2,n);
+       ll arr[si];
+       for(ll i=0;i<si;i++){
+           arr[i]=i;
+       }
+       for(ll i=0;i<k;i++){
+           ll temp=arr[i];
+           arr[i]= arr[n-1-i];
+           arr[n-1-i]=temp;
+       }
 
-    for(int i=0;i<n;i++){
-        int x;
-        cin>>x;
-        mp[x]++;
+       ll ans=0;
+       for(ll i=0;i<k;i++){
+           arr[i]= arr[i]^i;
+           arr[n-1-i]= arr[n-1-i]^(n-1-i);
+           ans= ans+ arr[i]+ arr[n-1-i];
+
+       }
+
+       cout<<ans<<endl;
     }
-
-    int count=0;
-    vector<int> a;
-
-    map<int,int> :: iterator it;
-    for(it=mp.begin();it!=mp.end();it++){
-        if(it->second>=2){
-            count++;
-            a.push_back(it->first);
-        }
-    }
-
-    cout<<count<<endl;
-    for(auto i: a){
-        cout<<i<<endl;
-    }
-    return 0;
 }
