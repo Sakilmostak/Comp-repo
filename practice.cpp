@@ -2,25 +2,23 @@
 
 using namespace std;
 
-int run_bfs(int s, vector<vector<int>> & adjList, vector<bool> & visited){
-	queue<int> Q;
-	Q.push(s);
-	visited[s]= true;
-	int node_count=0;
-	while(!Q.empty()){
-		s=Q.front();
-		Q.pop();
-		node_count+=1;
+int inTime[1000];
+int outTime[1000];
 
-		for(int adjNode: adjList[s]){
-			if(!visited[adjNode]){
-				visited[adjNode]=true;
-				Q.push(adjNode);
-			}
+int inT=0,outT=0;
+
+int dfs(int s, vector<vector<int>> & adjList, vector<bool> & visited){
+	visited[s]=true;
+	inTime[s]=inT;
+	inT++;
+
+	for(int adjNode: adjList[s]){
+		if(!visited[adjNode]){
+			dfs(adjNode, adjList, visited);
 		}
 	}
-
-	return node_count;
+	outTime[s]=outT;
+	outT++;
 }
 
 int main(){
