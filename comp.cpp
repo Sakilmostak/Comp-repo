@@ -7,15 +7,14 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        ll n,k;
-        cin>>n>>k;
-        if(k>0){
-            
-            cout<<n/k<<" "<<n%k<<endl;
+        int l,r;
+        cin>>l>>r;
+        int count=0;
+        for(int i=l;i<=r;i++){
+            if(i%10==2 || i%10==3 || i%10==9){
+                count++;
+            }
         }
-        else{
-            cout<<"0"<<" "<<n<<endl;
-        }
-        
+        cout<<count<<endl;
     }
 }
