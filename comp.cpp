@@ -4,12 +4,18 @@
 using namespace std;
 
 int main(){
-    ll a;
-    cin>>a;
-    if(a%3==0 || a%6==1){
-        cout<<"yes"<<endl;
-    }
-    else{
-        cout<<"no"<<endl;
+    int t;
+    cin>>t;
+    while(t--){
+        ll n,k;
+        cin>>n>>k;
+        if(k>0){
+            
+            cout<<n/k<<" "<<n%k<<endl;
+        }
+        else{
+            cout<<"0"<<" "<<n<<endl;
+        }
+        
     }
 }
