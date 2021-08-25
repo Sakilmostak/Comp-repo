@@ -2,41 +2,72 @@
 
 using namespace std;
 
-void checkTriplet(int a, int b,int c,int n, int* count){
-	if(a==0){
-		checkTriplet(n,b-1,c,n,count);
-		return;
+struct Node{
+	int data;
+	Node* right;
+	Node* left;
+	Node(int val){
+		data=val;
+		right=NULL;
+		left=NULL;
 	}
-	if(b==1){
-		return;
+};
+
+int maxSumofMaxPath(Node* root, int* height, int *ans, int *prevtotal){
+	if(root==NULL){
+		return 0;
+	}
+	if(root->left==NULL && root->right==NULL){
+		*height=1;
+		*ans= root->data;
+		return root->data;
 	}
 
-	if(b%c==0){
-		if(a%b==c){
-			*count+=1;
+	int lh=0,rh=0,ansleft=0,ansright=0,dialeft=0,diaright=0;
+
+	int left= maxSumofMaxPath(root->left, &lh, &ansleft, &dialeft);
+	int right= maxSumofMaxPath(root->right, &rh, &ansright, &diaright);
+
+	*prevtotal= lh+rh+1;
+	*height= max(lh,rh)+1;
+
+	if(lh==rh){
+		*ans= max(ansleft+root->data, ansright+root->data);
+	}
+	else if(lh>rh){
+		*ans= root->data+ansleft;
+	}
+	else if(rh>lh){
+		*ans= root->data+ansright;
+	}
+
+	if(dialeft>diaright){
+		if(dialeft>*prevtotal){
+			return left;
+		}
+	}
+	else if(diaright>dialeft){
+		if(diaright>*prevtotal){
+			return right;
 		}
 	}
 
-	checkTriplet(a-1,b,c,n,count);
-
-	return;
+	return root->data+ansleft+ansright;
 }
-
 
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		int n;
-	cin>>n;
-	int count=0;
-	for(int c=1;c<=n/2;c++){
-		checkTriplet(n,n,c,n,&count);
-	}
+	Node* root= new Node(10);
+	root->left= new Node(2);
+	root->right= new Node(6);
+	root->left->left= new Node(100);
+	root->left->right= new Node(-4);
+	root->right->left= new Node(7);
+	root->right->right= new Node(5);
+	root->left->right->left= new Node(7);
 
-	cout<<count<<endl;
-	}
-	
-	return 0;
+	int check=0,height=0,prevtotal=0;
+
+	int ans= maxSumofMaxPath(root, &height, &check, &prevtotal);
+
+	cout<<ans<<endl;
 }
-	
