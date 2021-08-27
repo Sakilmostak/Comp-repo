@@ -1,51 +1,43 @@
 #include<bits/stdc++.h>
-
 using namespace std;
 
-int main(){
+class school{
+    public:
+    int roll;
+    int marks;
+    string name;
+    
+    void fill(int r, int m, string n){
+        roll=r;
+        marks=m;
+        name=n;
+    }
+};
+
+bool compare(school a, school b){
+    if(a.marks!=b.marks){
+        return a.marks>b.marks;
+    }
+    
+    return a.roll<b.roll;
+}
+    
+int main()
+{
     int n;
     cin>>n;
-    string s;
-    cin>>s;
-    vector<char> sCap;
-    for(int i=0;i<s.length();i++){
-        sCap.push_back(s[i]-32);
+    school scp[n];
+    for(int i=0;i<n;i++){
+        string s;
+        int a,b,c;
+        cin>>s>>a>>b>>c;
+        scp[i].fill(i+1,a+b+c,s);
     }
-    string alpha = "abcdefghijklmnopqrstuvwxyz";
-    string Balpha= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    while(n--){
-        string take;
-        cin>>take;
-        vector<char> ans;
-        for(int i=0;i<take.length();i++){
-            if(take[i]=='_'){
-                ans.push_back(' ');
-            }
-            else if(take[i]>='a' && take[i]<='z'){
-                for(int j=0;j<alpha.length();j++){
-                    if(take[i]==alpha[j]){
-                        ans.push_back(s[j]);
-                        break;
-                    }
-                }
-            }
-            else if(take[i]>='A' && take[i]<='Z'){
-                for(int j=0;j<Balpha.length();j++){
-                    if(take[i]==Balpha[j]){
-                        ans.push_back(sCap[j]);
-                        break;
-                    }
-                }
-            }
-            else{
-                ans.push_back(take[i]);
-            }
-        }
-
-        for(int i=0;i<ans.size();i++){
-            cout<<ans[i];
-        }
-        cout<<endl;
+    
+    sort(scp,scp+n,compare);
+    
+    for(int i=0;i<n;i++){
+        cout<<i+1<<" "<<scp[i].name<<endl;
     }
+	return 0;
 }
