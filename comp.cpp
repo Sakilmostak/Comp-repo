@@ -1,43 +1,20 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-class school{
-    public:
-    int roll;
-    int marks;
-    string name;
-    
-    void fill(int r, int m, string n){
-        roll=r;
-        marks=m;
-        name=n;
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        int a,b,a1,b1,a2,b2;
+        cin>>a>>b>>a1>>b1>>a2>>b2;
+        if((a==a1 or a==b1) and (b==a1 or b==b1)){
+            cout<<"1"<<endl;
+        }
+        else if((a==a2 or a==b2) and (b==a2 or b==b2)){
+            cout<<"2"<<endl;
+        }
+        else{
+            cout<<"0"<<end;
+        }
     }
-};
-
-bool compare(school a, school b){
-    if(a.marks!=b.marks){
-        return a.marks>b.marks;
-    }
-    
-    return a.roll<b.roll;
-}
-    
-int main()
-{
-    int n;
-    cin>>n;
-    school scp[n];
-    for(int i=0;i<n;i++){
-        string s;
-        int a,b,c;
-        cin>>s>>a>>b>>c;
-        scp[i].fill(i+1,a+b+c,s);
-    }
-    
-    sort(scp,scp+n,compare);
-    
-    for(int i=0;i<n;i++){
-        cout<<i+1<<" "<<scp[i].name<<endl;
-    }
-	return 0;
 }
