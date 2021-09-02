@@ -6,33 +6,35 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        int a0=0,a1=0,b0=0,b1=0;
-        for(int i=0;i<3;i++){
-            int x;
-            cin>>x;
-            if(x==0){
-                a0++;
-            }
-            else{
-                a1++;
-            }
+        int n,k,l;
+        cin>>n>>k>>l;
+        int arr[n];
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
         }
-        for(int i=0;i<3;i++){
-            int x;
-            cin>>x;
-            if(x==0){
-                b0++;
+
+        if(k>0){
+            arr[n-1]+=(k*(l-1));
+        }
+
+        int maxSpeed=0;
+        int count=1;
+
+        for(int i=0;i<n;i++){
+            if(arr[i]>maxSpeed){
+                maxSpeed=arr[i];
+                count=1;
             }
-            else{
-                b1++;
+            else if(arr[i]==maxSpeed){
+                count++;
             }
         }
 
-        if(a0==b0 && a1==b1){
-            cout<<"Pass"<<endl;
+        if(arr[n-1]==maxSpeed && count==1){
+            cout<<"Yes"<<endl;
         }
         else{
-            cout<<"Fail"<<endl;
+            cout<<"No"<<endl;
         }
     }
 }
