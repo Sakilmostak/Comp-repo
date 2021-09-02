@@ -6,33 +6,33 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        int n;
-        cin>>n;
-        int arr[n];
-        for(int i=0;i<n;i++){
-            cin>>arr[i];
-        }
-
-        int bsize=arr[0];
-        int step=0;
-        int bstep=0;
-
-        for(int i=1;i<n;i++){
-            if(arr[i]<=arr[i-1]){
-                step++;
+        int a0=0,a1=0,b0=0,b1=0;
+        for(int i=0;i<3;i++){
+            int x;
+            cin>>x;
+            if(x==0){
+                a0++;
             }
             else{
-                if(arr[i]>bsize){
-                    cout<<"-1"<<endl;
-                }
-                else{
-                    bsize=arr[i];
-                    bstep++;
-                    step=0;
-                }
+                a1++;
+            }
+        }
+        for(int i=0;i<3;i++){
+            int x;
+            cin>>x;
+            if(x==0){
+                b0++;
+            }
+            else{
+                b1++;
             }
         }
 
-        cout<<bstep+step<<endl;
+        if(a0==b0 && a1==b1){
+            cout<<"Pass"<<endl;
+        }
+        else{
+            cout<<"Fail"<<endl;
+        }
     }
 }
