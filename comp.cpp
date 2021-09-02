@@ -6,35 +6,51 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        int n,k,l;
-        cin>>n>>k>>l;
-        int arr[n];
+        int n,k;
+        cin>>n>>k;
+        vector<int> arr(n);
         for(int i=0;i<n;i++){
             cin>>arr[i];
         }
 
-        if(k>0){
-            arr[n-1]+=(k*(l-1));
-        }
+        vector<int> ans;
+        ans= arr;
+        sort(arr.begin(),arr.end());
 
-        int maxSpeed=0;
-        int count=1;
-
-        for(int i=0;i<n;i++){
-            if(arr[i]>maxSpeed){
-                maxSpeed=arr[i];
-                count=1;
-            }
-            else if(arr[i]==maxSpeed){
+        map<int,int> mp;
+        int count=0;
+        for(int i=n-1;i>=0;i--){
+            if(count<k){
+                mp[arr[i]]=1;
                 count++;
             }
+            else{
+                break;
+            }
         }
 
-        if(arr[n-1]==maxSpeed && count==1){
-            cout<<"Yes"<<endl;
+        vector<int> rep;
+
+        for(int i=0;i<n;i++){
+            if(mp[ans[i]]==1){
+                rep.push_back(ans[i]);
+            }
         }
-        else{
-            cout<<"No"<<endl;
+
+        vector<int> realAns;
+        realAns=rep;
+
+        sort(rep.begin(),rep.end());
+
+        cout<<rep[(k-1)/2]<<endl;
+
+        for(auto i: realAns){
+            cout<<i<<" ";
         }
+        cout<<endl;
+
+
+
+        
     }
 }
