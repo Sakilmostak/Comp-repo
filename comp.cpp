@@ -6,50 +6,69 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        int n,k;
-        cin>>n>>k;
-        vector<int> arr(n);
+        int n;
+        cin>>n;
+        string s;
+        cin>>s;
+        int x,y;
+        cin>>x>>y;
+
+        vector<int> eastarray;
+        eastarray.push_back(0);
+        int sum=0;
         for(int i=0;i<n;i++){
-            cin>>arr[i];
+            if(s[i]=='N'){
+                int cost= min(x,(3*y));
+                sum+=cost;
+                eastarray.push_back(sum);
+            }
+            else if(s[i]=='S'){
+                int cost= min((3*x),y);
+                sum+=cost;
+                eastarray.push_back(sum);
+            }
+            else if(s[i]=='W'){
+                int cost= min((2*x),(2*y));
+                sum+=cost;
+                eastarray.push_back(sum);
+            }
+            else if(s[i]=='E'){
+                eastarray.push_back(sum);
+            }
         }
 
-        vector<int> ans;
-        ans= arr;
-        sort(arr.begin(),arr.end());
-
-        map<int,int> mp;
-        int count=0;
+        vector<int> westarray(n+1);
+        westarray[n]=0;
+        int wsum=0;
         for(int i=n-1;i>=0;i--){
-            if(count<k){
-                mp[arr[i]]=1;
-                count++;
+            if(s[i]=='N'){
+                int cost= min((3*x),y);
+                wsum+=cost;
+                westarray[i]=wsum;
             }
-            else{
-                break;
+            else if(s[i]=='S'){
+                int cost= min(x,(3*y));
+                wsum+=cost;
+                westarray[i]=wsum;
+            }
+            else if(s[i]=='E'){
+                int cost= min((2*x),(2*y));
+                wsum+=cost;
+                westarray[i]=wsum;
+            }
+            else if(s[i]=='W'){
+                westarray[i]=wsum;
             }
         }
 
-        vector<int> rep;
-
-        for(int i=0;i<n;i++){
-            if(mp[ans[i]]==1){
-                rep.push_back(ans[i]);
-            }
+        vector<int> ans(n+1);
+        for(int i=0;i<n+1;i++){
+            ans[i]=eastarray[i]+westarray[i];
         }
 
-        vector<int> realAns;
-        realAns=rep;
+        sort(ans.begin(),ans.end());
 
-        sort(rep.begin(),rep.end());
-
-        cout<<rep[(k-1)/2]<<endl;
-
-        for(auto i: realAns){
-            cout<<i<<" ";
-        }
-        cout<<endl;
-
-
+        cout<<ans[0]<<endl;
 
         
     }
