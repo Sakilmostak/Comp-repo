@@ -1,41 +1,69 @@
 #include<bits/stdc++.h>
-#define ll long long
-
 using namespace std;
 
-int main(){
+long long getMinSum(long long *arr, int n){
+    if(n==1){
+        return 0;
+    }
+    int mid=n/2;
+    long long ans1= getMinSum(arr,mid);
+    long long ans2= getMinSum(arr+mid,n-mid);
+
+    long long total=0;
+    
+    
+    int i=0,j=mid,k=0;
+    long long temp[n];
+    while(i<mid && j<n){
+        if(arr[i]<arr[j]){
+            temp[k]=arr[i];
+            total+= arr[i]*(n-j);
+            k++;
+            i++;
+        }
+        else{
+            temp[k]=arr[j];
+            k++;
+            j++;
+        }
+    }
+    
+    while(i<mid){
+        temp[k]=arr[i];
+        k++;
+        i++;
+    }
+    
+    while(j<n){
+        temp[k]=arr[j];
+        k++;
+        j++;
+    }
+    
+    for(int i=0;i<n;i++){
+        arr[i]=temp[i];
+    }
+    
+    return ans1+ans2+total;
+}
+
+int main()
+{
     int t;
     cin>>t;
     while(t--){
-        ll n,l,r;
-        cin>>n>>l>>r;
-        int base;
-        if(r>=n && n>=l){
-            base=n;
-        }
-        else{
-            int ans=INT_MAX;
-            for(ll i=l;i<=r;i++){
-                if(i>=n){
-                    base=i;
-                }
-                else{
-                    ll p=n;
-                    int sum=0;
-                    while(p){
-                        sum+=p%i;
-                        p=p/i;
-                    }
+        int n;
+    	cin >> n;
 
-                    if(sum<ans){
-                        ans=sum;
-                        base=i;
-                    }
-                }
-            
-            }
-        }
-        
-        cout<<base<<endl;
+    	long long* arr = new long long[n];
+
+    	for(int i = 0; i < n; ++i)
+    	{
+        	cin >> arr[i];
+    	}
+
+    	cout << getMinSum(arr, n)<<endl;
+
+    	delete arr;
     }
 }
