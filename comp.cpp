@@ -1,143 +1,60 @@
 #include<bits/stdc++.h>
-#define ll long long
 using namespace std;
 
-int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        int n,k;
-        cin>>n>>k;
-        vector<int> arr(n);
-        int count=0;
+void placeNQueen(int arr[][10],int n, int para){
+    if(para==n){
         for(int i=0;i<n;i++){
-            cin>>arr[i];
-            if(arr[i]==0){
-                count++;
+            for(int j=0;j<n;j++){
+                cout<<arr[i][j]<<" ";
             }
         }
+        cout<<endl;
 
-        int i=0;
-        int red=0;
-        vector<int> arr1;
-        arr1=arr;
-
-        while(count && k>0){
-            count=0;
-            k--;
-            for(int i=0;i<n;i++){
-                if(i==0){
-                    if(arr[i]>0){
-                        arr1[n-1]++;
-                        arr1[i+1]++;
-                    }
-                }
-                if(i==n-1){
-                    if(arr[i]>0){
-                        arr1[0]++;
-                        arr1[i-1]++;
-                    }
-                }
-
-                if(arr[i]>0){
-                    arr1[i-1]++;
-                    arr1[i+1]++;
-                }
-            }
-
-            arr=arr1;
-#include<bits/stdc++.h>
-#define ll long long
-using namespace std;
-
-int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        int n;
-        ll k;
-        cin>>n>>k;
-        ll arr[n];
-        int count=0;
-        for(int i=0;i<n;i++){
-            cin>>arr[i];
-            if(arr[i]==0){
-                count++;
-            }
-        }
-        
-        if(count==n){
-            cout<<"0"<<endl;
-        }
-        else{
-        ll arr1[n];
-        for(int i=0;i<n;i++){
-            arr1[i]=arr[i];
-        }
-
-        while(count && k>0){
-            count=0;
-            k--;
-            for(int i=0;i<n;i++){
-                if(i==0){
-                    if(arr[i]>0){
-                        arr1[n-1]++;
-                        arr1[1]++;
-                    }
-                }
-                else if(i==n-1){
-                    if(arr[i]>0){
-                        arr1[0]++;
-                        arr1[n-2]++;
-                    }
-                }
-
-                else if(arr[i]>0){
-                    arr1[i-1]++;
-                    arr1[i+1]++;
-                }
-            }
-
-            for(int i=0;i<n;i++){
-                arr[i]=arr1[i];
-                if(arr[i]==0){
-                    count++;
-                }
-            }
-
-        }
-        
-        ll sum=0;
-
-        if(k>0){
-            sum+=(2*k*n);
-        }
-
-        for(int i=0;i<n;i++){
-            sum+=arr[i];
-        }
-
-        cout<<sum<<endl;
-        }
+        return;
     }
+
+    for(int i=0;i<n;i++){
+        bool check= true;
+        int j=para,k=i;
+        while(j>=0){
+            if(arr[j][i]==1){
+                check=false;
+                break;
+            }
+            j--;
+        }
+        j=para;
+        while(j>=0 && k>=0){
+            if(arr[j][k]==1){
+                check=false;
+                break;
+            }
+            j--;
+            k--;
+        }
+        j=para;
+        k=i;
+        while(j>=0 && k<n){
+            if(arr[j][k]==1){
+                check=false;
+                break;
+            }
+            j--;
+            k++;
+        }
+        if(check){
+            arr[para][i]=1;
+            placeNQueen(arr,n,para+1);
+            arr[para][i]=0;
+        }
+        
+    }
+
 }
-            for(int i=0;i<n;i++){
-                if(arr[i]==0){
-                    count++;
-                }
-            }
-        }
 
-        int sum=0;
-
-        if(k>0){
-            sum+=(k*n*2);
-        }
-
-        for(int i=0;i<n;i++){
-            sum+=arr[i];
-        }
-
-        cout<<sum<<endl;
-    }
+int main(){
+    int n;
+    cin>>n;
+    int arr[10][10]={0};
+    placeNQueen(arr, n, 0);
 }
