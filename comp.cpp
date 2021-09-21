@@ -1,60 +1,57 @@
 #include<bits/stdc++.h>
+
 using namespace std;
 
-void placeNQueen(int arr[][10],int n, int para){
-    if(para==n){
+int puzzle[18][18]={0};
+int path[18][18]={0};
+
+void ratRoute(int n, int x, int y){
+    if(x==-1 || x==n || y==-1 || y==n){
+        return;
+    }
+    if(x== n-1 && y==n-1){
+        path[x][y]=1;
         for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
-                cout<<arr[i][j]<<" ";
+                cout<<path[i][j]<<" ";
             }
         }
         cout<<endl;
-
+        path[x][y]=0;
         return;
     }
 
-    for(int i=0;i<n;i++){
-        bool check= true;
-        int j=para,k=i;
-        while(j>=0){
-            if(arr[j][i]==1){
-                check=false;
-                break;
-            }
-            j--;
-        }
-        j=para;
-        while(j>=0 && k>=0){
-            if(arr[j][k]==1){
-                check=false;
-                break;
-            }
-            j--;
-            k--;
-        }
-        j=para;
-        k=i;
-        while(j>=0 && k<n){
-            if(arr[j][k]==1){
-                check=false;
-                break;
-            }
-            j--;
-            k++;
-        }
-        if(check){
-            arr[para][i]=1;
-            placeNQueen(arr,n,para+1);
-            arr[para][i]=0;
+    if(puzzle[x][y]==0){
+        return;
+    }
+    else{
+        if(path[x][y]==0){
+            path[x][y]=1;
+
+            ratRoute(n, x-1,y);
+            ratRoute(n,x+1,y);
+            ratRoute(n,x,y-1);
+            ratRoute(n,x,y+1);
+            path[x][y]=0;
         }
         
     }
 
+    return;
 }
 
 int main(){
     int n;
     cin>>n;
-    int arr[10][10]={0};
-    placeNQueen(arr, n, 0);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            int x;
+            cin>>x;
+            puzzle[i][j]=x;
+        }
+    }
+
+    ratRoute(n,0,0);
+
+    
 }
