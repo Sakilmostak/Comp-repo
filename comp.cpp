@@ -2,83 +2,34 @@
 
 using namespace std;
 
-bool checkPoint(int** sudoku, int x, int y){
-    int para= sudoku[x][y];
-    for(int i=0;i<9;i++){
-        if(sudoku[i][y]==para && i!=x){
-            return false;
+void subsetSum(int arr[], int n, int sum, int &count){
+    if(n==0){
+        if(sum==0){
+            count++;
         }
-    }
-    for(int i=0;i<9;i++){
-        if(sudoku[x][i]==para && i!=y){
-            return false;
-        }
-    }
-    int br= (x/3)*3;
-    int bc= (y/3)*3;
-    for(int i=br;i<(br+3);i++){
-        for(int j=bc;j<(bc+3);j++){
-            if(i!=x || j!=y){
-                if(sudoku[i][j]==para){
-                    return false;
-                }
-            }
-        }
+        return;
     }
 
-    return true;
-}
+    subsetSum(arr+1, n-1, sum, count);
+    subsetSum(arr+1,n-1, sum-arr[0], count);
 
-bool sudokuSolver(int** sudoku);
-
-bool feasiblity(int** sudoku, int x, int y){
-    bool ans;
-    for(int i=1;i<=9;i++){
-        sudoku[x][y]=i;
-        bool feasible= checkPoint(sudoku,x,y);
-
-        if(feasible){
-            ans=sudokuSolver(sudoku);
-            if(ans){
-                return ans;
-            }
-        }
-    }
-
-    sudoku[x][y]=0;
-    return false;
-}
-
-bool sudokuSolver(int** sudoku){
-    for(int i=0;i<9;i++){
-        for(int j=0;j<9;j++){
-            if(sudoku[i][j]==0){
-                bool ans= feasiblity(sudoku,i,j);
-                return ans;
-            }
-        }
-    }
-
-    return true;
 }
 
 int main(){
-    int **sudoku = new int* [9];
-    for(int i=0;i<9;i++){
-        sudoku[i] = new int[9];
-    }
-
-    for(int i=0;i<9;i++){
-        for(int j=0;j<9;j++){
-            cin>>sudoku[i][j];
+    int t;
+    cin>>t;
+    while(t--){
+        int n,k;
+        cin>>n>>k;
+        int arr[n];
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
         }
-    }
-    bool final= sudokuSolver(sudoku);
-    if(final){
-        cout<<"true"<<endl;
-    }
-    else{
-        cout<<"false"<<endl;
-    }
+        
+        int count=0;
 
+        subsetSum(arr, n, k, count);
+        
+        cout<<count<<endl;
+    }
 }
