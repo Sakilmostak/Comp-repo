@@ -2,34 +2,43 @@
 
 using namespace std;
 
-void subsetSum(int arr[], int n, int sum, int &count){
-    if(n==0){
-        if(sum==0){
-            count++;
-        }
-        return;
-    }
-
-    subsetSum(arr+1, n-1, sum, count);
-    subsetSum(arr+1,n-1, sum-arr[0], count);
-
+bool descending(pair<int,int> p1, pair<int,int> p2){
+    return p1.first>p2.first;
 }
 
 int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        int n,k;
-        cin>>n>>k;
-        int arr[n];
-        for(int i=0;i<n;i++){
-            cin>>arr[i];
-        }
-        
-        int count=0;
-
-        subsetSum(arr, n, k, count);
-        
-        cout<<count<<endl;
+    int n;
+    cin>>n;
+    vector<pair<int,int>> rect;
+    for(int i=0;i<n;i++){
+        int x,y;
+        cin>>x>>y;
+        rect.push_back(make_pair(x/2,y));
     }
+
+    sort(rect.begin(),rect.end(),descending);
+    long long area=0;
+    int width=rect[0].second;
+
+    for(int i=0;i<n-1;i++){
+        int xwidth= rect[i].first-rect[i+1].first;
+        if(rect[i].second>width){
+            width=rect[i].second;
+        }
+
+        area+= (xwidth*width);
+    }
+
+    if(rect[n-1].second>width){
+        width=rect[n-1].second;
+    }
+
+    area+= (width*rect[n-1].first);
+    area*=2;
+
+    cout<<area<<endl;
+
+    /* for(int i=0;i<n;i++){
+        cout<<rect[i].first<<" "<<rect[i].second<<endl;
+    } */
 }
