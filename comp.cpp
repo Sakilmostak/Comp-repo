@@ -4,41 +4,52 @@
 using namespace std;
 
 int main(){
-    int n;
-    cin>>n;
-    ll xcost,ycost;
-    cin>>xcost>>ycost;
-    string bulb;
-    cin>>bulb;
-    
-    int count=0;
-    bool check=true;
-    for(int i=0;i<n;i++){
-        if(bulb[i]=='0'){
-            check=false;
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        cin>>n;
+        int arr[n];
+        int pcheck[n+1]={0};
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
         }
-    }
-    for(int i=0;i<n-1;i++){
-        if(bulb[i]=='0' && bulb[i+1]=='1'){
-            count++;
-        }
-    }
-    
-    if(check){
-        cout<<"0"<<endl;
-    }
-    else{
-        int xcount=count;
-        int ycount=count+1;
-        if(bulb[n-1]=='1'){
-            xcount--;
-            ycount--;
-        }
-        
-        ll ans1=(xcount*xcost)+ycost;
-        ll ans2=(ycount*ycost);
-        cout<<min(ans1,ans2)<<endl;
-    }
 
-    
+        int count=0;
+        
+        int k=0;
+        
+        while(k<2){
+            for(int i=0;i<n-1;i++){
+            if(arr[i]>arr[i+1]){
+                if(pcheck[arr[i]]<2 && pcheck[arr[i+1]]<2){
+                    int temp=arr[i]^arr[i+1];
+                    arr[i+1]=temp^arr[i+1];
+                    arr[i]=temp^arr[i];
+                    count++;
+                    pcheck[arr[i]]++;
+                    pcheck[arr[i+1]]++;
+                }
+            }
+        }
+            k++;
+        }
+
+        
+
+        bool check=true;
+
+        for(int i=0;i<n-1;i++){
+            if(arr[i]>arr[i+1]){
+                cout<<"NO"<<endl;
+                check=false;
+                break;
+            }
+        }
+
+        if(check){
+            cout<<"YES"<<endl;
+            cout<<count<<endl;
+        }
+    }
 }
