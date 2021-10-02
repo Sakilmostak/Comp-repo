@@ -1,55 +1,40 @@
 #include<bits/stdc++.h>
+using namespace std;
+#define mod 1000000007
 #define ll long long
 
-using namespace std;
+ll decodealpha(string s, int size){
+	ll* output= new ll[size+1];
+	output[0]=1;
+	output[1]=1;
+	
+
+	for(int i=2;i<=size;i++){
+        if(s[i-1]=='0'){
+            return 0;
+        }
+		output[i]=output[i-1]%mod;
+		int fa=s[i-2]-'0';
+        int fb=s[i-1]-'0';
+        int check= fa*10 + fb;
+		if(check<=26){
+			output[i]+=output[i-2]%mod;
+		}
+	}
+
+	ll myans=output[size]%mod;
+	delete [] output;
+	return myans;
+}
 
 int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        int n;
-        cin>>n;
-        int arr[n];
-        int pcheck[n+1]={0};
-        for(int i=0;i<n;i++){
-            cin>>arr[i];
-        }
+	int t;cin>>t;
+	while(t--){
+		string s;
+		cin>>s;
 
-        int count=0;
-        
-        int k=0;
-        
-        while(k<2){
-            for(int i=0;i<n-1;i++){
-            if(arr[i]>arr[i+1]){
-                if(pcheck[arr[i]]<2 && pcheck[arr[i+1]]<2){
-                    int temp=arr[i]^arr[i+1];
-                    arr[i+1]=temp^arr[i+1];
-                    arr[i]=temp^arr[i];
-                    count++;
-                    pcheck[arr[i]]++;
-                    pcheck[arr[i+1]]++;
-                }
-            }
-        }
-            k++;
-        }
-
-        
-
-        bool check=true;
-
-        for(int i=0;i<n-1;i++){
-            if(arr[i]>arr[i+1]){
-                cout<<"NO"<<endl;
-                check=false;
-                break;
-            }
-        }
-
-        if(check){
-            cout<<"YES"<<endl;
-            cout<<count<<endl;
-        }
-    }
+		ll ans= decodealpha(s,s.size());
+		cout<<ans<<endl;
+		
+	}
 }
