@@ -1,76 +1,31 @@
 #include<bits/stdc++.h>
 using namespace std;
+#define mod 1000000007
+#define ll long long
 
-int lbs(int arr[], int n){
-	int output[n];
-    int outputacs[n];
-    int outputdcs[n];
-	int flag[n]={0};
-
-	for(int i=0;i<n;i++){
-		output[i]=1;
-        outputacs[i]=1;
-        outputdcs[i]=1;
-		for(int j=i-1;j>=0;j--){
-			int pans;
-            if(arr[j]<arr[i]){
-                pans=outputacs[j]+1;
-                if(pans>outputacs[i]){
-                    outputacs[i]=pans;
-                }
-            }
-            if(arr[j]>arr[i]){
-                pans=outputdcs[j]+1;
-                if(pans>outputdcs[i]){
-                    outputdcs[i]=pans;
-                }
-            }
-			if(flag[j]==0 && arr[j]<arr[i]){
-				pans=output[j]+1;
-				if(pans>output[i]){
-					output[i]=pans;
-					flag[i]=0;
-				}
-			}
-            else if(flag[j]==1 && arr[j]<arr[i]){
-                pans=2;
-                if(pans>output[i]){
-                    output[i]=pans;
-                    flag[i]=0;
-                }
-            }
-			else if(flag[j]==1 && arr[j]>arr[i]){
-				pans=output[j]+1;
-				if(pans>output[i]){
-					output[i]=pans;
-					flag[i]=1;
-				}
-			}
-			else if(flag[j]==0 && arr[j]>arr[i]){
-				pans=output[j]+1;
-				if(pans>output[i]){
-					output[i]=pans;
-					flag[i]=1;
-				}
-			}
-            if(outputacs[j]+1>output[i] && arr[j]>arr[i]){
-                output[i]=outputacs[j]+1;
-                flag[i]=1;
-            }
-		}
+ll tNumExchange(int  arr[],int n, int value, ll** check){
+	if(n<=0){
+		return 0;
 	}
-	int ans=0;
-    int ans1=0;
-    int ans2=0;
-    for(int i=0;i<n;i++){
-        ans= max(ans,output[i]);
-        ans1=max(ans1,outputacs[i]);
-        ans2= max(ans2,outputdcs[i]);
+	if(value==0){
+		return 1;
+	}
+    if(value<0){
+		return 0;
+	}
+
+	if(check[value][n]!=-1){
+		return check[value][n];
+	}
+
+	ll first= tNumExchange(arr,n,value-arr[0],check)%mod;
+	ll second= tNumExchange(arr+1,n-1,value,check)%mod;
+	ll total= (first+second)%mod;
+	if(check[value][n]==-1){
+        check[value][n]=total;
     }
-    
-    //cout<<ans1<<" "<<ans2<<endl;
-    
-    return max(ans,max(ans1,ans2));
+
+	return total;
 }
 
 int main(){
@@ -83,8 +38,21 @@ int main(){
 		for(int i=0;i<n;i++){
 			cin>>arr[i];
 		}
+		int value;
+		cin>>value;
+		ll **check= new ll*[value+1];
 
-		int ans= lbs(arr,n);
-		cout<<ans<<endl;
+		for(int i=0;i<=value;i++){
+			check[i]= new ll[n+1];
+		}
+
+		for(int i=0;i<=value;i++){
+			for(int j=0;j<=n;j++){
+				check[i][j]=-1;
+			}
+		}
+		ll ans= tNumExchange(arr,n,value,check);
+        cout<<ans<<endl;
+		
 	}
 }
