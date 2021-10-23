@@ -9,38 +9,52 @@ int main(){
 	while(t--){
 		int n,m;
 		cin>>n>>m;
-		int arr[n+1]={0};
-		int start[n+1]={0};
-		int end[n+1]={0};
-		for(int i=0;i<m;i++){
-			int l,r;
-			cin>>l>>r;
-			start[l]++;
-			end[r]++;
-		}
-        
-        arr[1]=start[1];
-		for(int i=2;i<=n;i++){
-			arr[i]=start[i]-end[i-1]+arr[i-1];
+		int arr[n+1][m+1];
+		for(int i=1;i<=n;i++){
+			for(int j=1;j<=m;j++){
+				cin>>arr[i][j];
+			}
 		}
 
-		int dp[10001]={0};
+		int dp[n+1][m+1];
+		for(int i=1;i<=m;i++){
+			dp[1][i]=1;
+		}
+
+		for(int i=2;i<=n;i++){
+			for(int j=1;j<=m;j++){
+				if(arr[i-1][j]<arr[i][j]){
+					dp[i][j]=dp[i-1][j];
+				}
+				else{
+					dp[i][j]=i;
+				}
+			}
+		}
+
+		int ans[n+1];
 
 		for(int i=1;i<=n;i++){
-			dp[arr[i]]++;
+			ans[i]=dp[i][1];
+			for(int j=2;j<=m;j++){
+				ans[i]=min(ans[i],dp[i][j]);
+			}
 		}
 
-		for(int i=9999;i>0;i--){
-			dp[i]+=dp[i+1];
+		int k;
+		cin>>k;
+		while(k--){
+			int l,r;
+			cin>>l>>r;
+			if(ans[r]<=l){
+				cout<<"Yes"<<endl;
+			}
+			else{
+				cout<<"No"<<endl;
+			}
 		}
 
-		int q;
-		cin>>q;
-		while(q--){
-			int x;
-			cin>>x;
-			cout<<dp[x]<<endl;
-		}
+
 
 	}
 }
