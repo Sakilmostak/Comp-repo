@@ -3,28 +3,9 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll findMinCount(int arr[], int size, int num, int output[]){
-	if(num==0){
-		return 0;
-	}
-	if(num<0){
-		return INT_MAX;
-	}
-	if(size==0){
-		return INT_MAX;
-	}
-
-	int tosub=pow(arr[0],2);
-	if(output[num]!=-1){
-		return output[num];
-	}
-	ll first= findMinCount(arr,size,num-tosub,output);
-	ll second=  findMinCount(arr+1,size-1,num,output);
-	ll count= min(first+1,second);
-	output[num]=count;
-	//cout<<count<<" "<<num<<endl;
-	return  count;
-}
+struct city{
+	double x,y,f;
+};
 
 int main(){
 	int t;
@@ -32,19 +13,29 @@ int main(){
 	while(t--){
 		int n;
 		cin>>n;
-		int req= sqrt(n);
-		int arr[req];
-		for(int i=0;i<req;i++){
-			arr[i]=i+1;
+		city cities[n];
+		for(int i=0;i<n;i++){
+			cin>>cities[i].x;
+			cin>>cities[i].y;
+			cin>>cities[i].f;
 		}
 
-		int output[n+1];
-		for(int i=0;i<=n;i++){
-			output[i]=-1;
+		double dp[n];
+		for(int i=0;i<n;i++){
+			dp[i]=(-1*INT_MAX);
 		}
 
-		ll ans= findMinCount(arr,req,n,output);
-		cout<<ans<<endl;
+		dp[0]=cities[0].f;
+
+		for(int i=0;i<n;i++){
+			for(int j=0;j<i;j++){
+				dp[i]=max(dp[i],dp[j]+cities[i].f-(sqrt(pow(cities[i].x-cities[j].x,2)+pow(cities[i].y-cities[j].y,2))));
+				
+			}
+			//cout<<dp[i]<<endl;
+		}
+		cout<<fixed;
+		cout<<setprecision(6)<<dp[n-1]<<endl;
 
 	}
 }
