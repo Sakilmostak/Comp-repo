@@ -3,9 +3,16 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-struct city{
-	double x,y,f;
-};
+int gcd(int n1,int  n2){
+while(n1 != n2) {
+    if(n1 > n2)
+      n1 -= n2;
+    else
+      n2 -= n1;
+  }
+    
+    return n1;
+}
 
 int main(){
 	int t;
@@ -13,29 +20,34 @@ int main(){
 	while(t--){
 		int n;
 		cin>>n;
-		city cities[n];
+		int arr[n];
 		for(int i=0;i<n;i++){
-			cin>>cities[i].x;
-			cin>>cities[i].y;
-			cin>>cities[i].f;
+			cin>>arr[i];
 		}
 
-		double dp[n];
-		for(int i=0;i<n;i++){
-			dp[i]=(-1*INT_MAX);
-		}
-
-		dp[0]=cities[0].f;
-
-		for(int i=0;i<n;i++){
+		ll dp[n][101]={0};
+		dp[0][arr[0]]=1;
+		for(int i=1;i<n;i++){
+            dp[i][arr[i]]=1;
 			for(int j=0;j<i;j++){
-				dp[i]=max(dp[i],dp[j]+cities[i].f-(sqrt(pow(cities[i].x-cities[j].x,2)+pow(cities[i].y-cities[j].y,2))));
-				
+				if(arr[j]<arr[i]){
+					for(int k=1;k<=100;k++){
+						int newgcd= gcd(arr[i],k);
+						dp[i][newgcd]=(dp[i][newgcd]+dp[j][k])%mod;
+						
+						
+					}
+				}
 			}
-			//cout<<dp[i]<<endl;
 		}
-		cout<<fixed;
-		cout<<setprecision(6)<<dp[n-1]<<endl;
+
+		ll tsum=0;
+
+		for(int i=0;i<n;i++){
+			tsum=(tsum+dp[i][1])%mod;
+		}
+
+		cout<<tsum<<endl;
 
 	}
 }
