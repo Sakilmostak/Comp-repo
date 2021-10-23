@@ -3,51 +3,44 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-int gcd(int n1,int  n2){
-while(n1 != n2) {
-    if(n1 > n2)
-      n1 -= n2;
-    else
-      n2 -= n1;
-  }
-    
-    return n1;
-}
-
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int n;
-		cin>>n;
-		int arr[n];
-		for(int i=0;i<n;i++){
-			cin>>arr[i];
+		int n,m;
+		cin>>n>>m;
+		int arr[n+1]={0};
+		int start[n+1]={0};
+		int end[n+1]={0};
+		for(int i=0;i<m;i++){
+			int l,r;
+			cin>>l>>r;
+			start[l]++;
+			end[r]++;
+		}
+        
+        arr[1]=start[1];
+		for(int i=2;i<=n;i++){
+			arr[i]=start[i]-end[i-1]+arr[i-1];
 		}
 
-		ll dp[n][101]={0};
-		dp[0][arr[0]]=1;
-		for(int i=1;i<n;i++){
-            dp[i][arr[i]]=1;
-			for(int j=0;j<i;j++){
-				if(arr[j]<arr[i]){
-					for(int k=1;k<=100;k++){
-						int newgcd= gcd(arr[i],k);
-						dp[i][newgcd]=(dp[i][newgcd]+dp[j][k])%mod;
-						
-						
-					}
-				}
-			}
+		int dp[10001]={0};
+
+		for(int i=1;i<=n;i++){
+			dp[arr[i]]++;
 		}
 
-		ll tsum=0;
-
-		for(int i=0;i<n;i++){
-			tsum=(tsum+dp[i][1])%mod;
+		for(int i=9999;i>0;i--){
+			dp[i]+=dp[i+1];
 		}
 
-		cout<<tsum<<endl;
+		int q;
+		cin>>q;
+		while(q--){
+			int x;
+			cin>>x;
+			cout<<dp[x]<<endl;
+		}
 
 	}
 }
