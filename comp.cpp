@@ -3,62 +3,56 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-struct items{
-	int wt;
-	int value;
+struct party{
+	int cost;
+	int fun;
 };
-
-int findMaxValue(items it[],int n, int knapwt, int** dp){
-	if(n==0){
-		return 0;
-	}
-
-	if(dp[n][knapwt]!=-1){
-		return dp[n][knapwt];
-	}
-
-	int first=0;
-
-	if(knapwt-it[0].wt>=0){
-		first= it[0].value + findMaxValue(it+1,n-1,knapwt-it[0].wt,dp);
-	}
-
-	int second= findMaxValue(it+1,n-1,knapwt,dp);
-
-	int ans= max(first,second);
-	dp[n][knapwt]=ans;
-	return ans;	
-}
 
 int main(){
 	
 		int n;
 		cin>>n;
-		items it[n];
+		party p[n];
 		for(int i=0;i<n;i++){
-			cin>>it[i].wt;
+			cin>>p[i].cost;
 		}
 		for(int i=0;i<n;i++){
-			cin>>it[i].value;
+			cin>>p[i].fun;
 		}
 
-		int knapwt;
-		cin>>knapwt;
-		int** dp= new int*[n+1];
+		int money;
+		cin>>money;
+		
+		int dp[n+1][money+1];
+		int sum[n+1][money+1];
 		for(int i=0;i<=n;i++){
-			dp[i]= new int[knapwt+1];
-			for(int j=0;j<=knapwt;j++){
-				dp[i][j]=-1;
+			dp[i][0]=0;
+			sum[i][0]=0;
+		}
+
+		for(int i=0;i<=money;i++){
+			dp[0][i]=0;
+			sum[0][i]=0;
+		}
+
+		for(int i=1;i<=n;i++){
+			for(int j=1;j<=money;j++){
+				dp[i][j]=dp[i-1][j];
+				sum[i][j]=sum[i-1][j];
+				int comp=0;
+				if(p[i-1].cost<=j){
+					comp=p[i-1].fun + dp[i-1][j-p[i-1].cost];
+				}
+				if(comp>dp[i][j]){
+					dp[i][j]=comp;
+					sum[i][j]=p[i-1].cost+ sum[i-1][j-p[i-1].cost];
+				}
+				else if(comp==dp[i][j]){
+					sum[i][j]=min(sum[i-1][j],p[i-1].cost+ sum[i-1][j-p[i-1].cost]);
+				}
 			}
 		}
 
-		int ans= findMaxValue(it,n,knapwt,dp);
-
-		for(int i=0;i<=n;i++){
-			delete [] dp[i];
-		}
-		delete [] dp;
-
-		cout<<ans<<endl;
+		cout<<sum[n][money]<<" "<<dp[n][money]<<endl;
 		
 }
