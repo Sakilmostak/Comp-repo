@@ -3,56 +3,71 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-struct party{
-	int cost;
-	int fun;
+struct items{
+	int profit;
+	int wt;
 };
+
+bool comp(items a,items b){
+	return a.profit<b.profit;
+}
+
 
 int main(){
 	
-		int n;
-		cin>>n;
-		party p[n];
-		for(int i=0;i<n;i++){
-			cin>>p[i].cost;
-		}
-		for(int i=0;i<n;i++){
-			cin>>p[i].fun;
-		}
+		int t;
+		cin>>t;
+		while(t--){
+			int n,w;
+			cin>>n>>w;
+			items item[n];
+			for(int i=0;i<n;i++){
+				cin>>item[i].profit;
+			}
 
-		int money;
-		cin>>money;
-		
-		int dp[n+1][money+1];
-		int sum[n+1][money+1];
-		for(int i=0;i<=n;i++){
-			dp[i][0]=0;
-			sum[i][0]=0;
-		}
+			for(int i=0;i<n;i++){
+				cin>>item[i].wt;
+			}
 
-		for(int i=0;i<=money;i++){
-			dp[0][i]=0;
-			sum[0][i]=0;
-		}
-
-		for(int i=1;i<=n;i++){
-			for(int j=1;j<=money;j++){
-				dp[i][j]=dp[i-1][j];
-				sum[i][j]=sum[i-1][j];
-				int comp=0;
-				if(p[i-1].cost<=j){
-					comp=p[i-1].fun + dp[i-1][j-p[i-1].cost];
-				}
-				if(comp>dp[i][j]){
-					dp[i][j]=comp;
-					sum[i][j]=p[i-1].cost+ sum[i-1][j-p[i-1].cost];
-				}
-				else if(comp==dp[i][j]){
-					sum[i][j]=min(sum[i-1][j],p[i-1].cost+ sum[i-1][j-p[i-1].cost]);
+			sort(item,item+n,comp);
+			
+			ll*** dp= new ll**[2];
+			for(int i=0;i<2;i++){
+				dp[i]=new ll*[n+1];
+				for(int j=0;j<=n;j++){
+					dp[i][j]= new ll[w+1];
+					for(int k=0;k<=w;k++){
+						dp[i][j][k]=0;
+					}
 				}
 			}
-		}
 
-		cout<<sum[n][money]<<" "<<dp[n][money]<<endl;
-		
+			int primes[11]= {1,2,3,5,7,11,13,17,19,23,29};
+
+			for(int i=1;i<=n;i++){
+				for(int j=1;j<=w;j++){
+					dp[0][i][j]=dp[0][i-1][j];
+
+					if(item[i-1].wt<=j){
+						dp[0][i][j]=max(dp[0][i][j],dp[0][i-1][j-item[i-1].wt]+item[i-1].profit);
+					}
+				}
+			}
+
+			for(int prime= 1;prime<=10;prime++){
+				int p=prime%2;
+				for(int i=1;i<=n;i++){
+					for(int j=1;j<=w;j++){
+						dp[p][i][j]=dp[p][i-1][j];
+						if(item[i-1].wt<=j){
+							dp[p][i][j]= max(dp[p][i][j],max(dp[p][i-1][j-item[i-1].wt]+item[i-1].profit,dp[p^1][i-1][j-item[i-1].wt]+ (item[i-1].profit*primes[prime])));
+						}
+					}
+				}
+			}
+
+			cout<<dp[0][n][w]<<endl;
+
+
+		}
 }
