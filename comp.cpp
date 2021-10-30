@@ -3,58 +3,63 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll findMaxStock(int arr[],int n,int k,int trans,ll*** dp){
-	if(n==0){
+ll totalBrack(bool arr[],int op, int cl, int n,ll** dp){
+	if(op>n || cl>n){
 		return 0L;
 	}
-	ll first=INT_MIN;
-	ll second=INT_MIN;
-	ll third=INT_MIN;
 
-	if(dp[trans][n][k]!=INT_MIN){
-		return dp[trans][n][k];
+	if(op==n && cl==n){
+		return 1L;
 	}
 
-	first= findMaxStock(arr+1,n-1,k,trans,dp);
-	if(trans==1){
-		second=findMaxStock(arr+1,n-1,k-1,0,dp)+arr[0];
-	}
-	if(trans==0 && k>0){
-		third=findMaxStock(arr+1,n-1,k,1,dp)-arr[0];
+	if(dp[op][cl]!=-1){
+		return dp[op][cl];
 	}
 
-	ll maxvalue= max(first,max(second,third));
-	dp[trans][n][k]=maxvalue;
+	if(op==cl || arr[op+cl+1]==true){
+		ll first= totalBrack(arr,op+1,cl,n,dp)%mod;
+		dp[op][cl]=first;
+		return first;
+	}
 
-	return maxvalue;
+	if(op==n){
+		ll second= totalBrack(arr,op,cl+1,n,dp)%mod;
+		dp[op][cl]=second;
+		return second;
+	}
+	else{
+		ll third=totalBrack(arr,op+1,cl,n,dp)%mod;
+		ll fourth= totalBrack(arr,op,cl+1,n,dp)%mod;
+		dp[op][cl]=(third+fourth)%mod;
+		return (third+fourth)%mod;
+	}
+
 
 }
-
 
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int k,n;
-		cin>>k;
-		cin>>n;
-		int arr[n];
-		for(int i=0;i<n;i++){
-			cin>>arr[i];
+		int n,k;
+		cin>>n>>k;
+		bool arr[(2*n)+1]={false};
+		for(int i=0;i<k;i++){
+			int x;
+			cin>>x;
+			arr[x]=true;
 		}
 
-		ll*** dp= new ll**[2];
-		for(int i=0;i<2;i++){
-			dp[i]= new ll*[n+1];
+		ll** dp= new ll*[n+1];
+		for(int i=0;i<=n;i++){
+			dp[i]=new ll[n+1];
 			for(int j=0;j<=n;j++){
-				dp[i][j]= new ll[k+1];
-				for(int f=0;f<=k;f++){
-					dp[i][j][f]=INT_MIN;
-				}
+				dp[i][j]=-1;
 			}
 		}
 
-		ll ans= findMaxStock(arr,n,k,0,dp);
+		ll ans= totalBrack(arr,0,0,n,dp);
 		cout<<ans<<endl;
+		
 	}
 }
