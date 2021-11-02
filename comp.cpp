@@ -3,61 +3,83 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-int shortSub(char a[], char b[],int n, int m, int** dp){
-	if(n==0 && m==0){
+ll maxBlessing(char a[],char b[],int n,int m,int k,ll*** dp){
+	if(k==0){
 		return 0;
 	}
 
-	if(dp[n][m]!=-1){
-		return dp[n][m];
+	if(n==0 || m==0){
+		return INT_MIN;
 	}
 
-	if(n==0){
-		int third= 1+shortSub(a,b+1,0,m-1,dp);
-		dp[n][m]=third;
-		return third;
+	if(dp[n][m][k]!=-1){
+		return dp[n][m][k];
 	}
-	if(m==0){
-		int fourth= 1+shortSub(a+1,b,n-1,m,dp);
-		dp[n][m]=fourth;
-		return fourth;
-	}
+
+	ll first;
+	ll second;
+	ll third;
 
 	if(a[0]==b[0]){
-		int fifth= 1+shortSub(a+1,b+1,n-1,m-1,dp);
-		dp[n][m]=fifth;
-		return fifth;
-	}
-	int first= 1+shortSub(a+1,b,n-1,m,dp);
-	int second= 1+shortSub(a,b+1,n,m-1,dp);
+		int value= a[0];
+		first= value+maxBlessing(a+1,b+1,n-1,m-1,k-1,dp);
+		second= maxBlessing(a+1,b,n-1,m,k,dp);
+		third= maxBlessing(a,b+1,n,m-1,k,dp);
 
-	dp[n][m]= min(first,second);
-	return min(first,second);
+		ll togive= max(first,max(second,third));
+		dp[n][m][k]=togive;
+		return togive;
+
+	}
+	else{
+		second= maxBlessing(a+1,b,n-1,m,k,dp);
+		third= maxBlessing(a,b+1,n,m-1,k,dp);
+
+		ll togive= max(second,third);
+		dp[n][m][k]=togive;
+		return togive;
+	}
 }
+
+
 
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		char a[501];
-		char b[501];
+		char a[1001];
+		char b[1001];
 		cin>>a;
 		cin>>b;
+		int k;
+		cin>>k;
+
 		int n=strlen(a);
 		int m=strlen(b);
-		int** dp= new int*[n+1];
+		ll*** dp=new ll**[n+1];
 		for(int i=0;i<=n;i++){
-			dp[i]=new int[m+1];
+			dp[i]=new ll*[m+1];
 			for(int j=0;j<=m;j++){
-				dp[i][j]=-1;
+				dp[i][j]= new ll[k+1];
+				for(int f=0;f<=k;f++){
+					dp[i][j][f]=-1;
+				}
 			}
 		}
 
-		int ans= shortSub(a,b,n,m,dp);
+		ll ans= maxBlessing(a,b,n,m,k,dp);
 		for(int i=0;i<=n;i++){
+			for(int j=0;j<=m;j++){
+				delete [] dp[i][j];
+			}
 			delete [] dp[i];
 		}
 		delete [] dp;
-		cout<<ans<<endl;
+		if(ans<-25600){
+			cout<<"0"<<endl;
+		}
+		else{
+			cout<<ans<<endl;
+		}
 	}
 }
