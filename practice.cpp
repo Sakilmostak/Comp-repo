@@ -3,67 +3,58 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll adjBitReq(int n,int k,int first,ll*** dp){
-	if(k<0){
-		return 0;
-	}
-    if(n==1){
-		if(k==0){
-			return 1;
-		}
-		else{
-			return 0;
-		}
-    }
-
+int findways(int** like, int n){
 	
-    
-    if(dp[first][n][k]!=-1){
-        return dp[first][n][k];
-    }
-    
-  
+	int* dp = new int[1<<n];
+	for(int i=0;i<(1<<n);i++){
+		dp[i]=0;
+	}
+	dp[0]=1;
 
-	if(first==1){
-		ll togive= (adjBitReq(n-1,k-1,1,dp)+adjBitReq(n-1,k,0,dp))%mod;
-        dp[first][n][k]=togive;
-        return togive;
+	for(int mask=0;mask<((1<<n)-1);mask++){
+
+		int temp = mask;
+		int k=0;
+		while(temp>0){
+			if(temp%2==1){
+				k++;
+			}
+			temp=temp/2;
+		}
+
+		for(int j=0;j<n;j++){
+			if(!(mask&(1<<j)) && like[k][j]==1){
+				dp[mask | (1<<j)]+= dp[mask];
+			}
+		}
 	}
-	else if(first==0){
-		ll togive=  (adjBitReq(n-1,k,1,dp)+adjBitReq(n-1,k,0,dp))%mod;
-        dp[first][n][k]=togive;
-        return togive;
-	}
+
+	return dp[(1<<n)-1];
 }
-
 
 int main(){
 	int t;
 	cin>>t;
-    ll ans[101+1][101];
-        ll*** dp=new ll**[2];
-		for(int i=0;i<2;i++){
-			dp[i]=new ll*[100+5];
-			for(int j=0;j<=100+4;j++){
-				dp[i][j]= new ll[100+5];
-				for(int f=0;f<=100+4;f++){
-					dp[i][j][f]=-1;
-				}
+	while(t--){
+		int n;
+		cin>>n;
+		int **like= new int*[n];
+		for(int i=0;i<n;i++){
+			like[i]= new int[n];
+		}
+		for(int i=0;i<n;i++){
+			for(int j=0;j<n;j++){
+				cin>>like[i][j];
 			}
 		}
-    for(ll n=1;n<=100;n++){
-        for(ll k=1;k<=100;k++){
-        
-            ans[n][k]=adjBitReq( n+1,k, 0, dp);
-        }
-    }
-    
-	while(t--){
-		int n,k;
-		cin>>n>>k;
 
-		
+		int * dp = new int[1<<n];
+		dp[0]=1;
+		for(int i=0;i<(1<<n);i++){
+			dp[i]=0;
+		}
 
-		cout<<ans[n][k]<<endl;
+		int ans= findways(like, n);
+		cout<<ans<<endl;
 	}
 }
