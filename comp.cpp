@@ -3,69 +3,58 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll finddiff(string s[], int n, int pos, ll mask, ll** dp){
-	if((mask&(mask-1))==0){
+ll stringmaker(string a, string b, string c, ll*** dp){
+    if(c.size()==0){
+		return 1;
+	}
+	if(a.size()==0 && b.size()==0){
 		return 0;
 	}
-
-	if(pos<0){
-		return 10000;
-	}
-    
-    if(dp[pos][mask]!=INT_MAX){
-        return dp[pos][mask];
-    }
-
-	ll mask1=0;
-	ll mask2=0;
-    int touches=0;
-	for(int i=0;i<n;i++){
-		if((mask&(1<<i))!=0){
-            touches++;
-			if(s[i][pos]=='0'){
-				mask1= mask1 | (1<<i);
-			}
-			if(s[i][pos]=='1'){
-				mask2= mask2 | (1<<i);
-			}
-		}	
+	if(dp[a.size()][b.size()][c.size()]!=-1){
+		return dp[a.size()][b.size()][c.size()];
 	}
 
-	ll first = finddiff(s,n,pos-1,mask1,dp);
-	ll second = finddiff(s,n,pos-1,mask2,dp);
-	ll third = finddiff(s,n,pos-1,mask,dp);
+	ll ans=0;
 
-	ll ans = min(first+second+touches,third);
-    dp[pos][mask]=ans;
+	for(int i=0;i<a.size();++i){
+		if(a[i]==c[0]){
+			ans+=stringmaker(a.substr(i+1),b,c.substr(1),dp);
+		}
+	}
+	for(int i=0;i<b.size();++i){
+		if(b[i]==c[0]){
+			ans+=stringmaker(a,b.substr(i+1),c.substr(1),dp);
+		}
+	}
 
-	return ans;
-
+	dp[a.size()][b.size()][c.size()]=ans%mod;
+	return ans%mod;
 
 }
+
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int n;
-		cin>>n;
-		string s[n];
-		for(int i=0;i<n;i++){
-			cin>>s[i];
+		string a,b,c;
+		cin>>a>>b>>c;
+
+		int alen=a.size();
+		int blen= b.size();
+		int clen= c.size();
+
+		ll ***dp= new ll**[alen+1];
+		for(int i=0;i<=alen;i++){
+			dp[i]= new ll*[blen+1];
+			for(int j=0;j<=blen;j++){
+				dp[i][j]= new ll[clen+1];
+				for(int k=0;k<=clen;k++){
+					dp[i][j][k]=-1;
+				}
+			}
 		}
-        
 
-		int strsize= s[0].size();
-		ll mask = (1<<n)-1;
-        
-        ll ** dp= new ll*[strsize];
-        for(int i=0;i<strsize;i++){
-            dp[i]= new ll[(1<<n)];
-            for(int j=0;j<=mask;j++){
-                dp[i][j]=INT_MAX;
-            }
-        }
-
-		ll ans= finddiff(s,n,strsize-1,mask,dp);
+		ll ans= stringmaker(a,b,c,dp);
 		cout<<ans<<endl;
 	}
 }
