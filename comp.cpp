@@ -3,58 +3,46 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll stringmaker(string a, string b, string c, ll*** dp){
-    if(c.size()==0){
-		return 1;
-	}
-	if(a.size()==0 && b.size()==0){
-		return 0;
-	}
-	if(dp[a.size()][b.size()][c.size()]!=-1){
-		return dp[a.size()][b.size()][c.size()];
+int numOfAps(int arr[], int n){
+	int minarr=INT_MAX, maxarr= INT_MIN;
+
+	for(int i=0;i<n;i++){
+		minarr= min(minarr,arr[i]);
+		maxarr= max(maxarr, arr[i]);
 	}
 
-	ll ans=0;
+	int dp[n], sum[1001];
 
-	for(int i=0;i<a.size();++i){
-		if(a[i]==c[0]){
-			ans+=stringmaker(a.substr(i+1),b,c.substr(1),dp);
+	ll ans=n+1;
+
+	for(int diff=(minarr-maxarr);diff<=(maxarr-minarr);diff++){
+		memset(sum,0,sizeof sum);
+
+		for(int i=0;i<n;i++){
+			dp[i]=1;
+
+			if(arr[i]-diff>=1 && arr[i]-diff<=10000){
+				dp[i]+=sum[arr[i]-diff];
+			}
+
+			ans+=dp[i]-1;
+			sum[arr[i]]+=dp[i];
+
 		}
 	}
-	for(int i=0;i<b.size();++i){
-		if(b[i]==c[0]){
-			ans+=stringmaker(a,b.substr(i+1),c.substr(1),dp);
-		}
-	}
 
-	dp[a.size()][b.size()][c.size()]=ans%mod;
-	return ans%mod;
-
+	return ans;
 }
 
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		string a,b,c;
-		cin>>a>>b>>c;
-
-		int alen=a.size();
-		int blen= b.size();
-		int clen= c.size();
-
-		ll ***dp= new ll**[alen+1];
-		for(int i=0;i<=alen;i++){
-			dp[i]= new ll*[blen+1];
-			for(int j=0;j<=blen;j++){
-				dp[i][j]= new ll[clen+1];
-				for(int k=0;k<=clen;k++){
-					dp[i][j][k]=-1;
-				}
-			}
-		}
-
-		ll ans= stringmaker(a,b,c,dp);
-		cout<<ans<<endl;
+	int n;
+	cin>>n;
+	int arr[n];
+	for(int i=0;i<n;i++){
+		cin>>arr[i];
 	}
+
+	cout<<numOfAps(arr, n)<<endl;
+
+	
 }
