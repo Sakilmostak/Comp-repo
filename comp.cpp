@@ -19,23 +19,23 @@ int main(){
 
 	int n;
 	cin>>n;
-    int primes[n+1],j=0;
-    for(int i=2;i<=n;i++){
-        if(arr[i]==0){
-            primes[j++]=i;
-        }
+	int count=0;
+	for(int i=2;i<=n+1;i++){
+		if(arr[i]==0){
+			count++;
+		}
+	}
+    
+    if(n==1){
+        cout<<"1"<<endl;
+        cout<<"0"<<" "<<"1"<<endl;
     }
-    
-    int count=0;
-    
-    for(int i=0;i<j-1;i++){
-        int sprime=primes[i]+primes[i+1]+1;
-        if(arr[sprime]==0 && sprime<=n){
-            arr[sprime]=1;
-            count++;
-        }
+    else if(n<=7){
+        cout<<"2"<<endl;
+        cout<<n-count<<" "<<count<<endl;
     }
-    
-    cout<<count<<endl;
-
+    else{
+        cout<<"2"<<endl;
+        cout<<count<<" "<<n-count<<endl;
+    }
 }
