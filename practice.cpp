@@ -3,30 +3,40 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll euclidGcd(int a, int b){
-	if(b==0){
-		return a;
-	}
-
-	return euclidGcd(b, a%b);
-}
 
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		ll x,y;
-		cin>>x>>y;
-
-		ll ans;
-
-		if(x>y){
-			ans=euclidGcd(x,y);
+	bool arr[10000001]={0};
+	for(int i=2;i<=1000;i++){
+		for(int j=i;j*i<=1000000;j++){
+            if(arr[i]==1){
+                break;
+            }
+            else{
+                arr[j*i]=1;
+            }
 		}
-		else{
-			ans=euclidGcd(y,x);
-		}
-
-		cout<<ans<<endl;
 	}
+
+	int n;
+	cin>>n;
+    if(n>=2){
+        cout<<"0"<<endl;
+        return 0;
+    }
+
+	int primes[n+1],j=0;
+	for(int p=2;p<=n;p++){
+		if(!arr[p]){
+			primes[j++]=p;
+		}
+	}
+
+	int count=0;
+	for(int k=0;k<j;k++){
+		if(!arr[k+1]){
+			count++;
+		}
+	}
+	cout<<count<<endl;
+
 }
