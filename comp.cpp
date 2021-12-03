@@ -5,39 +5,45 @@ using namespace std;
 
 
 int main(){
-	bool arr[1000001]={0};
-	for(int i=2;i<=100;i++){
-        for(ll j=1;j*pow(i,3)<=1000000;j++){
-            ll index= j*pow(i,3);
-            arr[index]=1;
-        }
-    }
-    
-    ll countpos[1000001]={0};
-    ll count=0;
-    for(ll i=1;i<1000001;i++){
-        if(arr[i]==0){
-            count++;
-            countpos[i]=count;
-        }
-        else{
-            countpos[i]=0L;
-        }
-    }
+	ll arr[1000001]={0};
+	for(int i=2;i<1000000;i++){
+		for(int j=2;j*i<=1000000;j++){
+            if(arr[i]>=1){
+                break;
+            }
+            else{
+                arr[j*i]+=1;
+            }
+		}
+	}
     
     int t;
     cin>>t;
     while(t--){
-        ll n;
-        cin>>n;
+        ll a,b,n;
+        cin>>a>>b>>n;
         
-        if(countpos[n]==0){
-            cout<<"Not Cube Free"<<endl;
+        int count=0;
+        int primecount=0;
+        
+        for(int i=a;i<=b;i++){
+            if(arr[i]==n){
+                count++;
+            }
+            if(arr[i]==0 && i>=2){
+                primecount++;
+            }
+        }
+        
+        if(n==1){
+            cout<<count+primecount<<endl;
         }
         else{
-            cout<<countpos[n]<<endl;
+            cout<<count<<endl;
         }
-    
     }
+    
+
+	
 
 }
