@@ -3,68 +3,32 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-class triplets{
-    public:
-    ll x;
-    ll y;
-    ll gcd;
-};
-
-triplets gcdExtendedEuclid(ll a, ll b){
+ll gcd(ll a, ll b){
     if(b==0){
-        triplets ans;
-        ans.gcd=a;
-        ans.x=1;
-        ans.y=0;
-        return ans;
+        return a;
     }
 
-    triplets getans= gcdExtendedEuclid(b, a%b);
-
-    triplets ans;
-    ans.gcd=getans.gcd;
-    ans.x= getans.y;
-    ans.y= getans.x- ((a/b)*(getans.y));
-    return ans;
-}
-
-ll mMInverse(ll a, ll m){
-    ll ans= gcdExtendedEuclid(a,m).x;
-    return (ans%m + m)%m;  //to handle negative values
+    return gcd(b, a%b);
 }
 
 int main(){
 	int t;
     cin>>t;
     while(t--){
-        ll a,b,d;
-        cin>>a>>b>>d;
+       ll a;
+       cin>>a;
+       string b;
+       cin>>b;
 
-        ll g= __gcd(a,b); //predefined func to find gcd
-        if(d%g){
-            cout<<0<<endl;
-            continue;
-        }
-        if(d==0){
-            cout<<1<<endl;
-            continue;
-        }
-        a/=g;
-        b/=g;
-        d/=g;
+       ll modans=0;
 
-        ll y1= ((d%a)* mMInverse(b,a))%a;
-        ll firstValue= d/b;
+       for(int i=0;i<b.length();i++){
+           int digit=b[i]-'0';
+           modans= (((modans*10)%a)+(digit%a))%a;
+       }
 
-        if(d<y1*b){
-            cout<<0<<endl;
-            continue;
-        }
+       ll ans = gcd(a, modans);
 
-        ll n = (firstValue-y1)/a;
-
-        ll ans= n+1;
-        cout<<ans<<endl;
-
+       cout<<ans<<endl;
     }
 }
