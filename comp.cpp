@@ -3,32 +3,42 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
-ll gcd(ll a, ll b){
-    if(b==0){
-        return a;
-    }
-
-    return gcd(b, a%b);
-}
 
 int main(){
-	int t;
+	bool arr[10000001]={0};
+	for(int i=2;i<=1000;i++){
+		for(int j=i;j*i<=1000000;j++){
+            if(arr[i]==1){
+                break;
+            }
+            else{
+                arr[j*i]=1;
+            }
+		}
+	}
+    
+    int t;
     cin>>t;
     while(t--){
-       ll a;
-       cin>>a;
-       string b;
-       cin>>b;
-
-       ll modans=0;
-
-       for(int i=0;i<b.length();i++){
-           int digit=b[i]-'0';
-           modans= (((modans*10)%a)+(digit%a))%a;
-       }
-
-       ll ans = gcd(a, modans);
-
-       cout<<ans<<endl;
+        int n;
+        cin>>n;
+        
+        ll ans=1;
+        
+        for(int i=2;i<=n;i++){
+            if(arr[i]==0){
+                int divcount=0;
+                int k=i;
+                while(k<=n){
+                    divcount+= (n/k)%mod;
+                    k*=i;
+                }
+                
+                ans= ((ans%mod)*((divcount+1)%mod))%mod;
+            }
+        }
+        
+        cout<<ans<<endl;
     }
+
 }
