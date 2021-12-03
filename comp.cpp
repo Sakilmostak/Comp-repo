@@ -3,39 +3,68 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
+class triplets{
+    public:
+    ll x;
+    ll y;
+    ll gcd;
+};
+
+triplets gcdExtendedEuclid(ll a, ll b){
+    if(b==0){
+        triplets ans;
+        ans.gcd=a;
+        ans.x=1;
+        ans.y=0;
+        return ans;
+    }
+
+    triplets getans= gcdExtendedEuclid(b, a%b);
+
+    triplets ans;
+    ans.gcd=getans.gcd;
+    ans.x= getans.y;
+    ans.y= getans.x- ((a/b)*(getans.y));
+    return ans;
+}
+
+ll mMInverse(ll a, ll m){
+    ll ans= gcdExtendedEuclid(a,m).x;
+    return (ans%m + m)%m;  //to handle negative values
+}
 
 int main(){
-	bool arr[10000001]={0};
-	for(int i=2;i<=1000;i++){
-		for(int j=i;j*i<=1000000;j++){
-            if(arr[i]==1){
-                break;
-            }
-            else{
-                arr[j*i]=1;
-            }
-		}
-	}
+	int t;
+    cin>>t;
+    while(t--){
+        ll a,b,d;
+        cin>>a>>b>>d;
 
-	int n;
-	cin>>n;
-	int count=0;
-	for(int i=2;i<=n+1;i++){
-		if(arr[i]==0){
-			count++;
-		}
-	}
-    
-    if(n==1){
-        cout<<"1"<<endl;
-        cout<<"0"<<" "<<"1"<<endl;
-    }
-    else if(n<=7){
-        cout<<"2"<<endl;
-        cout<<n-count<<" "<<count<<endl;
-    }
-    else{
-        cout<<"2"<<endl;
-        cout<<count<<" "<<n-count<<endl;
+        ll g= __gcd(a,b); //predefined func to find gcd
+        if(d%g){
+            cout<<0<<endl;
+            continue;
+        }
+        if(d==0){
+            cout<<1<<endl;
+            continue;
+        }
+        a/=g;
+        b/=g;
+        d/=g;
+
+        ll y1= ((d%a)* mMInverse(b,a))%a;
+        ll firstValue= d/b;
+
+        if(d<y1*b){
+            cout<<0<<endl;
+            continue;
+        }
+
+        ll n = (firstValue-y1)/a;
+
+        ll ans= n+1;
+        cout<<ans<<endl;
+
     }
 }
