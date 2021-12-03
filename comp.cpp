@@ -5,40 +5,39 @@ using namespace std;
 
 
 int main(){
-	bool arr[10000001]={0};
-	for(int i=2;i<=1000;i++){
-		for(int j=i;j*i<=1000000;j++){
-            if(arr[i]==1){
-                break;
-            }
-            else{
-                arr[j*i]=1;
-            }
-		}
-	}
+	bool arr[1000001]={0};
+	for(int i=2;i<=100;i++){
+        for(ll j=1;j*pow(i,3)<=1000000;j++){
+            ll index= j*pow(i,3);
+            arr[index]=1;
+        }
+    }
+    
+    ll countpos[1000001]={0};
+    ll count=0;
+    for(ll i=1;i<1000001;i++){
+        if(arr[i]==0){
+            count++;
+            countpos[i]=count;
+        }
+        else{
+            countpos[i]=0L;
+        }
+    }
     
     int t;
     cin>>t;
     while(t--){
-        int n;
+        ll n;
         cin>>n;
         
-        ll ans=1;
-        
-        for(int i=2;i<=n;i++){
-            if(arr[i]==0){
-                int divcount=0;
-                int k=i;
-                while(k<=n){
-                    divcount+= (n/k)%mod;
-                    k*=i;
-                }
-                
-                ans= ((ans%mod)*((divcount+1)%mod))%mod;
-            }
+        if(countpos[n]==0){
+            cout<<"Not Cube Free"<<endl;
         }
-        
-        cout<<ans<<endl;
+        else{
+            cout<<countpos[n]<<endl;
+        }
+    
     }
 
 }
