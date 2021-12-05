@@ -5,45 +5,36 @@ using namespace std;
 
 
 int main(){
-	ll arr[1000001]={0};
-	for(int i=2;i<1000000;i++){
-		for(int j=2;j*i<=1000000;j++){
-            if(arr[i]>=1){
-                break;
-            }
-            else{
-                arr[j*i]+=1;
-            }
-		}
-	}
-    
-    int t;
+	int t;
     cin>>t;
     while(t--){
-        ll a,b,n;
-        cin>>a>>b>>n;
-        
-        int count=0;
-        int primecount=0;
-        
-        for(int i=a;i<=b;i++){
-            if(arr[i]==n){
-                count++;
-            }
-            if(arr[i]==0 && i>=2){
-                primecount++;
-            }
+        int n;
+        cin>>n;
+        int arr[100001]={0};
+        for(int i=0;i<n;i++){
+            int x;
+            cin>>x;
+            arr[x]=1;
         }
-        
-        if(n==1){
-            cout<<count+primecount<<endl;
-        }
-        else{
-            cout<<count<<endl;
-        }
-    }
-    
 
-	
+        for(int i=1;i<=100000;i++){
+            if(arr[i]>=1){
+                for(int j=2*i;j<=100000;j+=i){
+                    if(arr[j]>=1){
+                        arr[j]+=arr[i];
+                    }
+                }
+            }
+        }
+
+        ll count=0;
+
+        for(int i=1;i<=100000;i++){
+            count+=arr[i];
+        }
+
+        cout<<count<<endl;
+
+    }
 
 }
