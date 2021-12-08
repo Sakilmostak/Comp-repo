@@ -5,38 +5,44 @@ using namespace std;
 
 
 int main(){
-	bool arr[10000001]={0};
-	for(int i=2;i<=1000;i++){
-		for(int j=i;j*i<=1000000;j++){
-            if(arr[i]==1){
-                break;
-            }
-            else{
-                arr[j*i]=1;
-            }
-		}
-	}
+	int t;
+	cin>>t;
+	while(t--){
+		string m,w;
+		cin>>m>>w;
 
-	int n;
-	cin>>n;
-    if(n>=2){
-        cout<<"0"<<endl;
-        return 0;
-    }
+		bool flag= 0;
+		int j=0;
 
-	int primes[n+1],j=0;
-	for(int p=2;p<=n;p++){
-		if(!arr[p]){
-			primes[j++]=p;
+		for(int i=0;i<m.size();i++){
+			if(w[j]==m[i]){
+				j++;
+			}
 		}
-	}
 
-	int count=0;
-	for(int k=0;k<j;k++){
-		if(!arr[k+1]){
-			count++;
+		if(j==w.size()){
+			flag=1;
 		}
+
+		j=0;
+
+		for(int i=0;i<w.size();i++){
+			if(m[j]==w[i]){
+				j++;
+			}
+		}
+
+		if(j==m.size()){
+			flag=1;
+		}
+
+		if(flag){
+			cout<<"YES"<<endl;
+		}
+		else{
+			cout<<"NO"<<endl;
+		}
+
 	}
-	cout<<count<<endl;
 
 }
