@@ -3,46 +3,33 @@ using namespace std;
 #define mod 1000000007
 #define ll long long
 
+ll gcd(ll a, ll b){
+	if(b==0){
+		return a;
+	}
+
+	return gcd(b, a%b);
+}
+
 
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		string m,w;
-		cin>>m>>w;
-
-		bool flag= 0;
-		int j=0;
-
-		for(int i=0;i<m.size();i++){
-			if(w[j]==m[i]){
-				j++;
-			}
+		int n;
+		cin>>n;
+		ll arr[n];
+		for(int i=0;i<n;i++){
+			cin>>arr[i];
 		}
 
-		if(j==w.size()){
-			flag=1;
+		ll ans=arr[0];
+		for(int i=1;i<n;i++){
+			ans= gcd(ans,arr[i]);
 		}
 
-		j=0;
+		cout<<ans<<endl;
 
-		for(int i=0;i<w.size();i++){
-			if(m[j]==w[i]){
-				j++;
-			}
-		}
-
-		if(j==m.size()){
-			flag=1;
-		}
-
-		if(flag){
-			cout<<"YES"<<endl;
-		}
-		else{
-			cout<<"NO"<<endl;
-		}
 
 	}
-
 }
