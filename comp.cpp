@@ -1,28 +1,40 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#define ll long long int
 using namespace std;
-#define mod 1000000007
-#define ll long long
-#define MAX 1000001
-
-int main(){
-
-	ll n,q;
-	cin>>n>>q;
-	ll a[n+1];
-	ll dp[n+1]={0};
-	for (ll i = 1; i <= n; ++i) { 
-        cin >> a[i]; 
-        if (a[i] == 3 || a[i] == 4 || a[i] == 6) 
-            dp[i] = 1; 
-
-        dp[i] += dp[i - 1]; 
-	} 
-
-    while (q--) {
-        ll l, r;
-        cin >> l >> r; 
-        cout << dp[r] - dp[l - 1] << '\n';
-	}
-
-
+ll pow1(ll a, ll b, ll c)
+{
+    ll ans = 1LL;
+    while (b > 0)
+    {
+        if (b & 1)
+            ans = (ans * a) % c;
+        a = (a * a) % c;
+        b = b >> 1;
+    }
+    return ans;
+}
+int main()
+{
+    ll n, p, i, ans, fact;
+    int t;
+    cin>>t;
+    while (t--)
+    {
+        fact = 1;
+        cin>>n>>p;
+        if (n >= p)
+        {
+            cout<<0<<endl;
+            continue;
+        }
+        for (i = n + 1; i <= p - 1; i++)
+        {
+            fact = (fact * i) % p;
+            if (fact == 0)
+                break;
+        }
+        ans = pow1(fact, p - 2, p);
+        cout<<p-ans<<endl;
+    }
+    return 0;
 }
