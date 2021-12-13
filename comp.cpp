@@ -1,41 +1,51 @@
-#include<iostream>
+#include <iostream>
 #define endl '\n'
-#define int long long int
-#define fast ios_base::sync_with_stdio(false);cin.tie(0);
+#define fast                          \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(0);
+#define ll long long
+#define MAX 1000001
+#define mod 1000000007
 using namespace std;
-long long fact(int a, int m){
-	long long res=1;
-	for(int i=2;i<=a;i++)
-		res=(res%m * i%m)%m;
-	return res;
+ll fact[MAX];
+ll modexpo(ll a, ll b)
+{
+    ll ans = 1;
+    while (b)
+    {
+        if (b & 1)
+            ans = (ans * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+    return ans;
 }
-int32_t main(){
+int main()
+{
     fast
-	int n;
-	cin>>n;
-	while(n--){
-		int t;
-		int m;
-		cin>>t>>m;
-		if(t<m){
-			if(m-t==1){
-				cout<<1<<endl;
-				continue;
-			}
-			else{
-				cout<<fact(t, m)%m<<endl;
-				continue;
-			}
-		}
-		else{
-			int last = t%m;
-			int facto=fact(last, m)%m;
-
-			if((t/m)%2==0)
-				cout<<facto<<endl;
-			else
-				cout<<((m-1)%m*facto%m)%m<<endl;
-		}
-	}
-	return 0;
+        ll n,
+        i, t, k, ans;
+    fact[0] = 1;
+    for (i = 1; i < MAX; i++)
+    {
+        fact[i] = i * fact[i - 1];
+        if (fact[i] >= mod)
+            fact[i] %= mod;
+    }
+    cin >> t;
+    while (t--)
+    {
+        cin >> n >> k;
+        if (k > n)
+        {
+            cout << endl;
+            continue;
+        }
+        ans = modexpo(2, k);
+        ans = (ans * fact[n]) % mod;
+        ans = (ans * modexpo(fact[k], mod - 2)) % mod;
+        ans = (ans * modexpo(fact[n - k], mod - 2)) % mod;
+        cout << ans << endl;
+    }
+    return 0;
 }
