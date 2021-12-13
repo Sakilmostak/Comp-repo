@@ -1,66 +1,41 @@
-#include <iostream>
-
-#define fast                          \
-    ios_base::sync_with_stdio(false); \
-    cin.tie(0);
+#include<iostream>
 #define endl '\n'
 #define int long long int
-#define MAX 1000001
-
+#define fast ios_base::sync_with_stdio(false);cin.tie(0);
 using namespace std;
+long long fact(int a, int m){
+	long long res=1;
+	for(int i=2;i<=a;i++)
+		res=(res%m * i%m)%m;
+	return res;
+}
+int32_t main(){
+    fast
+	int n;
+	cin>>n;
+	while(n--){
+		int t;
+		int m;
+		cin>>t>>m;
+		if(t<m){
+			if(m-t==1){
+				cout<<1<<endl;
+				continue;
+			}
+			else{
+				cout<<fact(t, m)%m<<endl;
+				continue;
+			}
+		}
+		else{
+			int last = t%m;
+			int facto=fact(last, m)%m;
 
-int phi[MAX];
-unsigned int S[MAX], G[MAX];
-
-int32_t main()
-{
-    fast unsigned int i, j, n;
-    phi[1] = 1;
-
-    for (i = 2; i < MAX; i += 2)
-    {
-        phi[i] = i / 2;
-    }
-
-    for (i = 3; i < MAX; i += 2)
-    {
-        if (!phi[i])
-        {
-            phi[i] = i - 1;
-            for (j = i << 1; j < MAX; j += i)
-            {
-                if (!phi[j])
-                {
-                    phi[j] = j;
-                }
-
-                phi[j] = phi[j] / i * (i - 1);
-            }
-        }
-    }
-
-    for (i = 0; i < MAX; i++)
-        S[i] = phi[i];
-
-    for (i = 2; i < MAX; i++)
-    {
-        for (j = 2; j * i < MAX; j++)
-        {
-            S[i * j] += j * phi[i];
-        }
-    }
-    
-    G[1] = 0;
-    for (i = 2; i < MAX; i++)
-        G[i] = G[i - 1] + S[i];
-    
-    int t;
-    cin>>t;
-    while (t--)
-    {
-        cin >> n;
-        if (n == 0)
-            break;
-        cout << G[n] << endl;
-    }
+			if((t/m)%2==0)
+				cout<<facto<<endl;
+			else
+				cout<<((m-1)%m*facto%m)%m<<endl;
+		}
+	}
+	return 0;
 }
