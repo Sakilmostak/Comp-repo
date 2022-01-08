@@ -1,29 +1,45 @@
 #include<bits/stdc++.h>
 #define ull unsigned long long
-#define MAX 1100001
+#define ll long long
 #define mod 1000000007
-#define ss(n) scanf("%lld", &n)
+#define endl "\n"
 using namespace std;
 
-int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        int n;
-        cin>>n;
-        ull arr[n];
-        for(int i=0;i<n;i++){
-            cin>>arr[i];
-        }
-
-        sort(arr,arr+n,greater<int>());
-
-        ull ans=0;
-
-        for(int i=0;i<n;i++){
-            ans+= (arr[i]*pow(2,i));
-        }
-
-        cout<<ans<<endl;
+bool comp(pair<ll,ll> f, pair<ll,ll> s){
+    if(f.second==s.second){
+        return f.first<s.first;
     }
+
+    return f.second<s.second;
+
+}
+
+int main(){
+    ll n;
+    cin>>n;
+    vector<pair<ll,ll>> arr;
+    for(int i=0;i<n;i++){
+        pair<ll,ll> x;
+        cin>>x.first;
+        cin>>x.second;
+        arr.push_back(x);
+    }
+
+    sort(arr.begin(),arr.end(),comp);
+
+    /*for(int i=0;i<n;i++){
+        cout<<arr[i].first<<" "<<arr[i].second<<endl;
+    }*/
+
+    ll finish=0;
+    ll ans=0;
+    for(int i=0;i<n;i++){
+        if(arr[i].first>=finish){
+            ans++;
+            finish=arr[i].second;
+        }
+    }
+
+    cout<<ans<<endl;
+
 }
