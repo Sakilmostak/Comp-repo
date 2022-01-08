@@ -6,17 +6,18 @@
 using namespace std;
 
 bool comp(pair<ll,ll> f, pair<ll,ll> s){
-    if(f.second==s.second){
-        return f.first<s.first;
-    }
+    double fr = f.first/(f.second+0.0);
+    double sr = s.first/(s.second+0.0);
 
-    return f.second<s.second;
+    return fr>sr;
 
 }
 
 int main(){
     ll n;
     cin>>n;
+    ll w;
+    cin>>w;
     vector<pair<ll,ll>> arr;
     for(int i=0;i<n;i++){
         pair<ll,ll> x;
@@ -30,16 +31,26 @@ int main(){
     /*for(int i=0;i<n;i++){
         cout<<arr[i].first<<" "<<arr[i].second<<endl;
     }*/
+    ll i=0;
+    double totalvalue=0;
 
-    ll finish=0;
-    ll ans=0;
-    for(int i=0;i<n;i++){
-        if(arr[i].first>=finish){
-            ans++;
-            finish=arr[i].second;
+    while(w>0 && i<n){
+        if(w-arr[i].second>=0){
+            totalvalue+=arr[i].first;
+            w=w-arr[i].second;
         }
+        else{
+            if(w>0)
+            {double curvalue= (arr[i].first/(arr[i].second+0.0))*w;
+            totalvalue+=curvalue;
+            break;}
+        }
+
+        i++;
     }
 
-    cout<<ans<<endl;
+    cout<<setprecision(6)<<fixed<<totalvalue<<endl;
+
+    
 
 }
