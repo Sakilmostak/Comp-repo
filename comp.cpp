@@ -5,72 +5,38 @@
 #define endl "\n"
 using namespace std;
 
-struct job{
-    public:
-
-    int start;
-    int finish;
-    int profit;
-
-};
-
-bool comp(struct job f, struct job s){
-    if(f.finish==s.finish){
-        return f.start<s.start;
-    }
-    return f.finish<s.finish;
-}
-
-int binarySearch(struct job arr[],int i){
-    int st=0,ed=i-1;
-    while(st<=ed){
-        int mid= (st+ed)/2;
-        if(arr[mid].finish<=arr[i].start){
-            if(arr[mid+1].finish<=arr[i].start){
-                st=mid+1;
-            }
-            else{
-                return mid;
-            }
-        }
-        else{
-            ed= mid-1;
-        }
-
-    }
-
-    return -1;
-}
-
 int main(){
-    int n;
-    cin>>n;
-    struct job arr[n];
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        cin>>n;
+        int arr[n];
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
+        }
 
-    for(int i=0;i<n;i++){
-        cin>>arr[i].start>>arr[i].finish>>arr[i].profit;
-    }
+        sort(arr,arr+n);
 
-    sort(arr,arr+n,comp);
+        ll dp[n]={0};
+        int count=0;
 
-    /*for(int i=0;i<n;i++){
-        cout<<arr[i].start<<" "<<arr[i].finish<<" "<<arr[i].profit<<endl;
-    }*/
-
-    ll dp[n]={0};
-    dp[0]=arr[0].profit;
-
-    for(int i=1;i<n;i++){
-            ll incprof=arr[i].profit;
-            int toinc= binarySearch(arr,i);
-            if(toinc!=-1){
-                incprof+=dp[toinc];
+        for(int i=0;i<n;i++){
+            count++;
+            if(count==arr[i]){
+                dp[i]=count;
+                count=0;
             }
+        }
 
-            dp[i]=max(incprof,dp[i-1]);
+        int ans=0;
+
+        for(int i=0;i<n;i++){
+            if(dp[i]!=0){
+                ans++;
+            }
+        }
+
+        cout<<ans<<endl;
     }
-
-    cout<<dp[n-1]<<endl;
-
-
 }
