@@ -5,52 +5,72 @@
 #define endl "\n"
 using namespace std;
 
-bool comp(pair<ll,ll> f, pair<ll,ll> s){
-    double fr = f.first/(f.second+0.0);
-    double sr = s.first/(s.second+0.0);
+struct job{
+    public:
 
-    return fr>sr;
+    int start;
+    int finish;
+    int profit;
 
+};
+
+bool comp(struct job f, struct job s){
+    if(f.finish==s.finish){
+        return f.start<s.start;
+    }
+    return f.finish<s.finish;
+}
+
+int binarySearch(struct job arr[],int i){
+    int st=0,ed=i-1;
+    while(st<=ed){
+        int mid= (st+ed)/2;
+        if(arr[mid].finish<=arr[i].start){
+            if(arr[mid+1].finish<=arr[i].start){
+                st=mid+1;
+            }
+            else{
+                return mid;
+            }
+        }
+        else{
+            ed= mid-1;
+        }
+
+    }
+
+    return -1;
 }
 
 int main(){
-    ll n;
+    int n;
     cin>>n;
-    ll w;
-    cin>>w;
-    vector<pair<ll,ll>> arr;
+    struct job arr[n];
+
     for(int i=0;i<n;i++){
-        pair<ll,ll> x;
-        cin>>x.first;
-        cin>>x.second;
-        arr.push_back(x);
+        cin>>arr[i].start>>arr[i].finish>>arr[i].profit;
     }
 
-    sort(arr.begin(),arr.end(),comp);
+    sort(arr,arr+n,comp);
 
     /*for(int i=0;i<n;i++){
-        cout<<arr[i].first<<" "<<arr[i].second<<endl;
+        cout<<arr[i].start<<" "<<arr[i].finish<<" "<<arr[i].profit<<endl;
     }*/
-    ll i=0;
-    double totalvalue=0;
 
-    while(w>0 && i<n){
-        if(w-arr[i].second>=0){
-            totalvalue+=arr[i].first;
-            w=w-arr[i].second;
-        }
-        else{
-            if(w>0)
-            {double curvalue= (arr[i].first/(arr[i].second+0.0))*w;
-            totalvalue+=curvalue;
-            break;}
-        }
+    ll dp[n]={0};
+    dp[0]=arr[0].profit;
 
-        i++;
+    for(int i=1;i<n;i++){
+            ll incprof=arr[i].profit;
+            int toinc= binarySearch(arr,i);
+            if(toinc!=-1){
+                incprof+=dp[toinc];
+            }
+
+            dp[i]=max(incprof,dp[i-1]);
     }
 
-    cout<<setprecision(6)<<fixed<<totalvalue<<endl;
+    cout<<dp[n-1]<<endl;
 
-    
 
 }
