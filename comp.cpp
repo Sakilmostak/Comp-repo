@@ -1,107 +1,101 @@
-#include<bits/stdc++.h>
-#define ull unsigned long long
-#define ll long long
-#define mod 1000000007
-#define endl "\n"
+#include<iostream>
+#include<algorithm>
+#include<limits.h>
 using namespace std;
+int power[100001];
 
-class warrior{
-    public:
-    ll strength;
-    ll coward;
-    int idx;
-};
+void buildPower(){
+    power[0] = 1;
+    for(int i = 1; i < 100001; i++) power[i] = (power[i-1]*2)%3;
+}
+void build_tree(int* arr, int* tree, int start, int end, int treenode)
+{
+	if (start == end)
+	{
+		tree[treenode] = arr[start];
+		return;
+	}
+	int mid = (start + end) / 2;
+	build_tree(arr, tree, start, mid, 2 * treenode);
+	build_tree(arr, tree, mid + 1, end, 2 * treenode + 1);
+	int right_child = tree[2 * treenode + 1];
+	int left_child = tree[2 * treenode];
+	tree[treenode] = (power[end-mid]*left_child + right_child)%3;
+}
 
-void buildtree(warrior arr[], warrior *tree, int start, int end, int treeidx){
-    if(start==end){
-        tree[treeidx]= arr[start];
+void update_flip(int *arr, int* tree, int start, int end, int treenode, int index)
+{
+	if (start == end)
+	{
+		arr[index]=1;
+        tree[treenode]=1;
         return;
     }
+	int mid = (start + end) / 2;
+	if (index > mid)
+	{
+		update_flip(arr, tree, mid + 1, end, 2 * treenode + 1, index);
+	}
+	else
+	{
+		update_flip(arr, tree, start, mid, 2 * treenode, index);
+	}
 
-    int mid = (start+end)/2;
-    buildtree(arr,tree,start,mid,2*treeidx);
-    buildtree(arr,tree,mid+1,end,2*treeidx+1);
-
-    if(tree[2*treeidx].strength==tree[2*treeidx+1].strength){
-        if(tree[2*treeidx].coward<=tree[2*treeidx+1].coward){
-            tree[treeidx]=tree[2*treeidx];
-            return;
-        }
-        else{
-            tree[treeidx]=tree[2*treeidx+1];
-            return;
-        }
-    }
-    else if(tree[2*treeidx].strength>tree[2*treeidx+1].strength){
-        tree[treeidx]= tree[2*treeidx];
-    }
-    else{
-        tree[treeidx]= tree[2*treeidx+1];
-    }
-
+	int right_child = tree[2 * treenode + 1];
+	int left_child = tree[2 * treenode];
+	tree[treenode] = (power[end-mid]*left_child + right_child)%3;
 }
 
-warrior query(warrior* tree, int start, int end, int treeidx, int left, int right){
-    
-    if(right<start || left>end){
-        warrior willgo;
-        willgo.strength=INT64_MIN;
-        willgo.coward=INT64_MAX;
-        willgo.idx=-1;
-        return willgo;
-    }
-
-    if(start>=left && end<=right){
-        return tree[treeidx];
-    }
-
-    int mid= (start+end)/2;
-    warrior ans1= query(tree,start,mid,2*treeidx,left,right);
-    warrior ans2= query(tree,mid+1,end,2*treeidx+1,left,right);
-    if(ans1.strength==ans2.strength){
-        if(ans1.coward<=ans2.coward){
-            return ans1;
-        }
-        else{
-            return ans2;
-            
-        }
-    }
-    else if(ans1.strength>ans2.strength){
-        return ans1;
-    }
-    else{
-        return ans2;
-    }
+int query_value(int* tree, int start, int end, int treenode, int left, int right)
+{
+	//completely outside
+	if (start > right || end < left)
+	{
+		return 0;
+	}
+	//completely inside
+	if (start >= left && end <= right)
+	{
+		return (tree[treenode]*power[right-end])%3;
+	}
+	//partial overlap
+	int mid = (start + end) / 2;
+	int answer_from_left = query_value(tree, start, mid, 2 * treenode, left, right);
+	int answer_from_right = query_value(tree, mid + 1, end, 2 * treenode + 1, left, right);
+	return (answer_from_left+answer_from_right)%3;
 }
-
-int main(){
-    int n;
-    cin>>n;
-    warrior arr[n];
-    for(int i=0;i<n;i++){
-        cin>>arr[i].strength;
-        arr[i].idx=i;
-    }
-    for(int i=0;i<n;i++){
-        cin>>arr[i].coward;
-    }
-    warrior* tree= new warrior[4*n];
-    
-    buildtree(arr,tree,0,n-1,1);
-
-    int q;
-    cin>>q;
-    while(q--){
-        int l,r;
-        cin>>l>>r;
-        warrior ans = query(tree,0,n-1,1,l-1,r-1);
-        cout<<ans.idx+1<<endl;
-    }
-
-    delete [] tree;
-
-    
-
-
+int main()
+{
+    buildPower();
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
+	int* arr = new int[n];
+	for (int i = 0; i < n; i++)
+	{
+		arr[i] = s[i]-'0';
+	}
+	int* tree = new int[4 * n]();
+	build_tree(arr, tree, 0, n - 1, 1);
+	int q;
+	cin >> q;
+	while (q--)
+	{
+		int query_type;
+		cin >> query_type;
+		if (query_type == 0)
+		{
+			int left, right;
+			cin >> left >> right;
+			cout << query_value(tree, 0, n - 1, 1, left, right) << endl;;
+		}
+		else
+		{
+			int index;
+			cin >> index;
+            if(arr[index]==0)
+			    update_flip(arr, tree, 0, n - 1, 1, index);
+		}
+	}
 }
