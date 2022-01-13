@@ -1,101 +1,77 @@
-#include<iostream>
-#include<algorithm>
-#include<limits.h>
+#include<bits/stdc++.h>
 using namespace std;
-int power[100001];
 
-void buildPower(){
-    power[0] = 1;
-    for(int i = 1; i < 100001; i++) power[i] = (power[i-1]*2)%3;
-}
-void build_tree(int* arr, int* tree, int start, int end, int treenode)
-{
-	if (start == end)
-	{
-		tree[treenode] = arr[start];
+void buildTree(int* arr,int* tree,int start,int end,int treeNode){
+
+	if(start == end){
+		tree[treeNode] = arr[start];
 		return;
 	}
-	int mid = (start + end) / 2;
-	build_tree(arr, tree, start, mid, 2 * treenode);
-	build_tree(arr, tree, mid + 1, end, 2 * treenode + 1);
-	int right_child = tree[2 * treenode + 1];
-	int left_child = tree[2 * treenode];
-	tree[treenode] = (power[end-mid]*left_child + right_child)%3;
+	int mid = (start+end)/2;
+
+	buildTree(arr,tree,start,mid,2*treeNode);
+	buildTree(arr,tree,mid+1,end,2*treeNode+1);
+	tree[treeNode] = min(tree[2*treeNode],tree[2*treeNode+1]);
 }
 
-void update_flip(int *arr, int* tree, int start, int end, int treenode, int index)
-{
-	if (start == end)
-	{
-		arr[index]=1;
-        tree[treenode]=1;
-        return;
-    }
-	int mid = (start + end) / 2;
-	if (index > mid)
-	{
-		update_flip(arr, tree, mid + 1, end, 2 * treenode + 1, index);
-	}
-	else
-	{
-		update_flip(arr, tree, start, mid, 2 * treenode, index);
+void updateSegmentTreeLazy(int* tree,int* lazy,int low,int high,int startR,int endR,int currPos,int inc){
+
+	if(low > high){
+		return;
 	}
 
-	int right_child = tree[2 * treenode + 1];
-	int left_child = tree[2 * treenode];
-	tree[treenode] = (power[end-mid]*left_child + right_child)%3;
-}
+	if(lazy[currPos] !=0){
+		tree[currPos] += lazy[currPos];
 
-int query_value(int* tree, int start, int end, int treenode, int left, int right)
-{
-	//completely outside
-	if (start > right || end < left)
-	{
-		return 0;
-	}
-	//completely inside
-	if (start >= left && end <= right)
-	{
-		return (tree[treenode]*power[right-end])%3;
-	}
-	//partial overlap
-	int mid = (start + end) / 2;
-	int answer_from_left = query_value(tree, start, mid, 2 * treenode, left, right);
-	int answer_from_right = query_value(tree, mid + 1, end, 2 * treenode + 1, left, right);
-	return (answer_from_left+answer_from_right)%3;
-}
-int main()
-{
-    buildPower();
-	int n;
-	cin >> n;
-	string s;
-	cin >> s;
-	int* arr = new int[n];
-	for (int i = 0; i < n; i++)
-	{
-		arr[i] = s[i]-'0';
-	}
-	int* tree = new int[4 * n]();
-	build_tree(arr, tree, 0, n - 1, 1);
-	int q;
-	cin >> q;
-	while (q--)
-	{
-		int query_type;
-		cin >> query_type;
-		if (query_type == 0)
-		{
-			int left, right;
-			cin >> left >> right;
-			cout << query_value(tree, 0, n - 1, 1, left, right) << endl;;
+		if(low!=high){
+			lazy[2*currPos] += lazy[currPos];
+			lazy[2*currPos+1] += lazy[currPos];
 		}
-		else
-		{
-			int index;
-			cin >> index;
-            if(arr[index]==0)
-			    update_flip(arr, tree, 0, n - 1, 1, index);
-		}
+		lazy[currPos] = 0;
 	}
+
+	// No overlap
+	if(startR > high || endR < low){
+		return;
+	}
+
+	// Complete Overlap
+
+	if(startR<= low && high <= endR){
+		tree[currPos] += inc;
+		if(low!=high){
+			lazy[2*currPos] += inc;
+			lazy[2*currPos+1] += inc;
+		}
+		return;
+	}
+
+	// Partial Overlap
+
+	int mid = (low+high)/2;
+	updateSegmentTreeLazy(tree,lazy,low,mid,startR,endR,2*currPos,inc);
+	updateSegmentTreeLazy(tree,lazy,mid+1,high,startR,endR,2*currPos+1,inc);
+	tree[currPos] = min(tree[2*currPos],tree[2*currPos+1]);
+}
+
+int main(){
+
+	int arr[] = {1,3,-2,4};
+	int* tree = new int[12]();
+	buildTree(arr,tree,0,3,1);
+	int* lazy = new int[12]();
+	updateSegmentTreeLazy(tree,lazy,0,3,0,3,1,3);
+	updateSegmentTreeLazy(tree,lazy,0,3,0,1,1,2);
+
+	cout<< "Segment Tree" <<endl;
+	for(int i=1;i<12;i++){
+		cout<<tree[i]<< endl;
+	}
+
+	cout<< "Lazy Tree" <<endl;
+	for(int i=1;i<12;i++){
+		cout<<lazy[i]<< endl;
+	}
+	
+	return 0;
 }
