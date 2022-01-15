@@ -5,76 +5,80 @@
 #define endl "\n"
 using namespace std;
 
-class coder{
+int numcheck[1000001];
+
+class query{
 	public:
-	int x;
-	int y;
-	int index;
+	int first,second,index;
 };
 
-bool comp(coder a, coder b){
-	if(a.x==b.x){
-		return a.y<b.y;
-	}
-
-	return a.x<b.x;
+bool comp(query a,query b){
+	return a.second<b.second;
 }
 
-void update(int y, int* BIT){
-	for(;y<=100000;y+=(y&(-y))){
-		BIT[y]++;
+void update(int i, int value, int n, int* BIT){
+	for(;i<=n;i+=(i&(-i))){
+		BIT[i]+=value;
 	}
 }
 
-int query(int y,int* BIT){
+int value(int i, int* BIT){
 	int count=0;
-	for(;y>0;y-=(y&(-y))){
-		count+=BIT[y];
+	for(;i>0;i-=(i&(-i))){
+		count+=BIT[i];
 	}
 
 	return count;
 }
 
 int main(){
-
 	int n;
-	cin >> n;
-
-	coder arr[n];
-	for(int i=0;i<n;i++){
-		cin>>arr[i].x;
-		cin>>arr[i].y;
-		arr[i].index=i;
+	cin>>n;
+	int arr[n+1];
+	for(int i=1;i<=n;i++){
+		cin>>arr[i];
 	}
 
-	sort(arr,arr+n,comp);
-
-	int *BIT= new int[100001]();
-
-	int ans[n];
-
-	for(int i=0;i<n;){
-		int endidx=i;
-		while(endidx<n && arr[i].x==arr[endidx].x && arr[i].y==arr[endidx].y){
-			endidx++;
-		}
-
-		//query
-		for(int j=i;j<endidx;j++){
-			ans[arr[j].index]= query(arr[j].y,BIT);
-		}
-
-		//update
-		for(int j=i;j<endidx;j++){
-			update(arr[j].y,BIT);
-		}
-
-		i=endidx;
+	int q;
+	cin>>q;
+	query* queries= new query[q];
+	for(int i=0;i<q;i++){
+		cin>>queries[i].first>>queries[i].second;
+		queries[i].index=i;
 	}
 
-	for(int i=0;i<n;i++){
-		cout<<ans[i]<<endl;
+	sort(queries,queries+q,comp);
+
+	int total=0;
+	int k=0;
+	int* BIT= new int[n+1]();
+	for(int i=0;i<1000001;i++){
+        numcheck[i]=-1;
+    }
+	int ans[q];
+
+	for(int i=1;i<=n;i++){
+		if(numcheck[arr[i]]!=-1){
+			update(numcheck[arr[i]],-1,n,BIT);
+		}
+		else{
+			total++;
+		}
+
+		update(i,1,n,BIT);
+		numcheck[arr[i]]=i;
+
+		while(k<q && queries[k].second==i){
+			ans[queries[k].index]= total- value(queries[k].first-1,BIT);
+			k++;
+		}
+
 	}
 
-	
+	for(int i=0;i<q;i++){
+		cout<<ans[i]<<" "<<endl;
+	}
+
+
+
 }
