@@ -5,34 +5,76 @@
 #define endl "\n"
 using namespace std;
 
-void update(int index,int value,int* BIT,int n){
+class coder{
+	public:
+	int x;
+	int y;
+	int index;
+};
 
-	for(;index <= n;index += index&(-index)){
-		BIT[index] += value;
+bool comp(coder a, coder b){
+	if(a.x==b.x){
+		return a.y<b.y;
+	}
+
+	return a.x<b.x;
+}
+
+void update(int y, int* BIT){
+	for(;y<=100000;y+=(y&(-y))){
+		BIT[y]++;
 	}
 }
 
-int query(int index,int* BIT){
-	int sum=0;
-	for(;index >0;index -= index&(-index)){
-		sum += BIT[index];
+int query(int y,int* BIT){
+	int count=0;
+	for(;y>0;y-=(y&(-y))){
+		count+=BIT[y];
 	}
-	return sum;
+
+	return count;
 }
+
 int main(){
 
 	int n;
 	cin >> n;
 
-	int* arr = new int[n+1]();
-	int* BIT = new int[n+1]();
-
-	for(int i=1;i<=n;i++){
-		cin >> arr[i];
-		update(i,arr[i],BIT,n);
+	coder arr[n];
+	for(int i=0;i<n;i++){
+		cin>>arr[i].x;
+		cin>>arr[i].y;
+		arr[i].index=i;
 	}
+
+	sort(arr,arr+n,comp);
+
+	int *BIT= new int[100001]();
+
+	int ans[n];
+
+	for(int i=0;i<n;){
+		int endidx=i;
+		while(endidx<n && arr[i].x==arr[endidx].x && arr[i].y==arr[endidx].y){
+			endidx++;
+		}
+
+		//query
+		for(int j=i;j<endidx;j++){
+			ans[arr[j].index]= query(arr[j].y,BIT);
+		}
+
+		//update
+		for(int j=i;j<endidx;j++){
+			update(arr[j].y,BIT);
+		}
+
+		i=endidx;
+	}
+
+	for(int i=0;i<n;i++){
+		cout<<ans[i]<<endl;
+	}
+
 	
-	cout << "Sum of first 5 elements " << query(5,BIT) <<endl;
-	cout << "Sum of elements from 2 index to 6 index " << query(6,BIT) - query(1,BIT) <<endl;
-	return 0;
 }
