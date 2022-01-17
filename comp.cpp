@@ -5,80 +5,49 @@
 #define endl "\n"
 using namespace std;
 
-int numcheck[1000001];
-
-class query{
-	public:
-	int first,second,index;
-};
-
-bool comp(query a,query b){
-	return a.second<b.second;
-}
-
-void update(int i, int value, int n, int* BIT){
-	for(;i<=n;i+=(i&(-i))){
-		BIT[i]+=value;
-	}
-}
-
-int value(int i, int* BIT){
-	int count=0;
-	for(;i>0;i-=(i&(-i))){
-		count+=BIT[i];
-	}
-
-	return count;
+void print(int** edges, int n, int sv, bool* visited){
+  cout << sv << endl;
+  visited[sv] = true;
+  for(int i=0; i<n; i++){
+    if(i==sv){
+      continue;
+    }
+    if(edges[sv][i]==1){
+      if(visited[i]){
+        continue;
+      }
+      print(edges, n, i, visited);
+    }
+  }
 }
 
 int main(){
-	int n;
-	cin>>n;
-	int arr[n+1];
-	for(int i=1;i<=n;i++){
-		cin>>arr[i];
-	}
+  int n;
+  int e;
+  cin >> n >> e;
 
-	int q;
-	cin>>q;
-	query* queries= new query[q];
-	for(int i=0;i<q;i++){
-		cin>>queries[i].first>>queries[i].second;
-		queries[i].index=i;
-	}
-
-	sort(queries,queries+q,comp);
-
-	int total=0;
-	int k=0;
-	int* BIT= new int[n+1]();
-	for(int i=0;i<1000001;i++){
-        numcheck[i]=-1;
+  int** edges = new int*[n];
+  for(int i=0; i<n; i++){
+    edges[i]=new int[n];
+    for(int j=0; j<n; j++){
+      edges[i][j]=0;
     }
-	int ans[q];
+  }
 
-	for(int i=1;i<=n;i++){
-		if(numcheck[arr[i]]!=-1){
-			update(numcheck[arr[i]],-1,n,BIT);
-		}
-		else{
-			total++;
-		}
+  for(int i=0; i<e; i++){
+    int f,s;
+    cin >> f >> s;
+    edges[f][s]=1;
+    edges[s][f]=1;
+  }
 
-		update(i,1,n,BIT);
-		numcheck[arr[i]]=i;
+  bool* visited = new bool[n];
 
-		while(k<q && queries[k].second==i){
-			ans[queries[k].index]= total- value(queries[k].first-1,BIT);
-			k++;
-		}
+  for(int i=0; i<n; i++){
+    visited[i]=false;
+  }
 
-	}
-
-	for(int i=0;i<q;i++){
-		cout<<ans[i]<<" "<<endl;
-	}
-
-
-
+  print(edges, n, 0, visited);
+  // Delete all the memory
+  return 0;
 }
