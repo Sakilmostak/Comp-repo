@@ -5,49 +5,60 @@
 #define endl "\n"
 using namespace std;
 
-void print(int** edges, int n, int sv, bool* visited){
-  cout << sv << endl;
-  visited[sv] = true;
-  for(int i=0; i<n; i++){
-    if(i==sv){
-      continue;
-    }
-    if(edges[sv][i]==1){
-      if(visited[i]){
-        continue;
-      }
-      print(edges, n, i, visited);
-    }
-  }
+void BFS(bool** adjgraph,bool* visited, int n, int startvalue);
+
+void check(bool** adjgraph, bool* visited, int n){
+	for(int i=0;i<n;i++){
+		if(!visited[i]){
+			BFS(adjgraph,visited,n,i);
+		}
+	}
 }
 
+void BFS(bool** adjgraph ,bool* visited,int n, int startvalue){
+	queue<int> q;
+	if(!visited[startvalue]){
+		cout<<startvalue<<" ";
+		visited[startvalue]=1;
+		q.push(startvalue);
+	}
+
+	while(!q.empty()){
+		int key=q.front();
+		q.pop();
+		for(int i=0;i<n;i++){
+			if(adjgraph[key][i] && !visited[i]){
+				cout<<i<<" ";
+				q.push(i);
+				visited[i]=1;
+			}
+		}
+	}
+
+	check(adjgraph,visited,n);
+}
+
+
 int main(){
-  int n;
-  int e;
-  cin >> n >> e;
+  int n,e;
+  cin>>n>>e;
 
-  int** edges = new int*[n];
-  for(int i=0; i<n; i++){
-    edges[i]=new int[n];
-    for(int j=0; j<n; j++){
-      edges[i][j]=0;
-    }
+  bool** adjgraph= new bool* [n];
+  for(int i=0;i<n;i++){
+	  adjgraph[i]= new bool[n];
+	  for(int j=0;j<n;j++){
+		  adjgraph[i][j]=0;
+	  }
   }
 
-  for(int i=0; i<e; i++){
-    int f,s;
-    cin >> f >> s;
-    edges[f][s]=1;
-    edges[s][f]=1;
+  for(int i=0;i<e;i++){
+	  int a,b;
+	  cin>>a>>b;
+	  adjgraph[a][b]=1;
+	  adjgraph[b][a]=1;
   }
 
-  bool* visited = new bool[n];
+  bool* visited= new bool[n]();
+  BFS(adjgraph,visited,n,0);
 
-  for(int i=0; i<n; i++){
-    visited[i]=false;
-  }
-
-  print(edges, n, 0, visited);
-  // Delete all the memory
-  return 0;
 }
