@@ -5,11 +5,32 @@
 #define endl "\n"
 using namespace std;
 
+void DFS(bool** adjgraph, bool* visited, int n, int startvalue){
+	if(!visited[startvalue]){
+		visited[startvalue]=1;
+	}
+
+	for(int i=0;i<n;i++){
+		if(adjgraph[startvalue][i] && !visited[i]){
+			DFS(adjgraph,visited,n,i);
+		}
+	}
+}
+
+bool isConnected(bool* visited,int n){
+	for(int i=0;i<n;i++){
+		if(!visited[i]){
+			return false;
+		}
+	}
+
+	return true;
+}
 
 int main(){
-	int test;
-    cin>>test;
-    while(test--){
+	int t;
+    cin>>t;
+    while(t--){
 		int n,e;
 		cin>>n>>e;
 
@@ -29,41 +50,15 @@ int main(){
 		}
 
 		bool* visited= new bool[n]();
-		map<int,int> mp;
-		int v1,v2;
-		cin>>v1>>v2;
-		bool ans=false;
-
-		queue<int> q;
-		if(!visited[v1]){
-			visited[v1]=1;
-			q.push(v1);
+		DFS(adjgraph,visited,n,0);
+		bool ans= isConnected(visited,n);
+		if(ans){
+			cout<<"true"<<endl;
 		}
-
-		while(!q.empty()){
-			int key=q.front();
-			q.pop();
-			for(int i=0;i<n;i++){
-				if(adjgraph[key][i] && !visited[i]){
-					q.push(i);
-					mp[i]=key;
-					visited[i]=1;
-					if(i==v2){
-						ans=true;
-					}
-				}
-			}
+		else{
+			cout<<"false"<<endl;
 		}
 		
-		if(ans){
-			int i=v2;
-			cout<<v2<<" ";
-			while(i!=v1){
-				i=mp[i];
-				cout<<i<<" ";
-			}
-		}
-        cout<<endl;
 	}
 
 
