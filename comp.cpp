@@ -5,35 +5,11 @@
 #define endl "\n"
 using namespace std;
 
-bool totalPathDFS(bool** adjgraph,bool* visited,int n, int v1,int v2){
-	if(v1==v2){
-        cout<<v2<<" ";
-		return true;
-	}
-	visited[v1]=1;
-	for(int i=0;i<n;i++){
-		if(adjgraph[i][v1] && !visited[i]){
-			if(i==v2){
-                cout<<i<<" ";
-				return true;
-			}
-			bool check=totalPathDFS(adjgraph,visited,n,i,v2);
-			if(check){
-                cout<<i<<" ";
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
 
 int main(){
-
-	int t;
-	cin>>t;
-	while(t--){
+	int test;
+    cin>>test;
+    while(test--){
 		int n,e;
 		cin>>n>>e;
 
@@ -52,15 +28,43 @@ int main(){
 			adjgraph[b][a]=1;
 		}
 
+		bool* visited= new bool[n]();
+		map<int,int> mp;
 		int v1,v2;
 		cin>>v1>>v2;
+		bool ans=false;
 
-		bool* visited= new bool[n]();
-		bool ans=totalPathDFS(adjgraph,visited,n,v1,v2);
-        if(ans){
-            cout<<v1<<" ";
-        }
-        cout<<endl;
+		queue<int> q;
+		if(!visited[v1]){
+			visited[v1]=1;
+			q.push(v1);
+		}
+
+		while(!q.empty()){
+			int key=q.front();
+			q.pop();
+			for(int i=0;i<n;i++){
+				if(adjgraph[key][i] && !visited[i]){
+					q.push(i);
+					mp[i]=key;
+					visited[i]=1;
+					if(i==v2){
+						ans=true;
+					}
+				}
+			}
+		}
 		
+		if(ans){
+			int i=v2;
+			cout<<v2<<" ";
+			while(i!=v1){
+				i=mp[i];
+				cout<<i<<" ";
+			}
+		}
+        cout<<endl;
 	}
+
+
 }
