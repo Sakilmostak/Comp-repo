@@ -17,16 +17,6 @@ void DFS(bool** adjgraph, bool* visited, int n, int startvalue){
 	}
 }
 
-bool isConnected(bool* visited,int n){
-	for(int i=0;i<n;i++){
-		if(!visited[i]){
-			return false;
-		}
-	}
-
-	return true;
-}
-
 int main(){
 	int t;
     cin>>t;
@@ -50,14 +40,15 @@ int main(){
 		}
 
 		bool* visited= new bool[n]();
-		DFS(adjgraph,visited,n,0);
-		bool ans= isConnected(visited,n);
-		if(ans){
-			cout<<"true"<<endl;
-		}
-		else{
-			cout<<"false"<<endl;
-		}
+        int ans=0;
+		for(int i=0;i<n;i++){
+            if(!visited[i]){
+                DFS(adjgraph,visited,n,i);
+                ans++;
+            }
+        }
+        
+        cout<<ans<<endl;
 		
 	}
 
