@@ -1,133 +1,53 @@
-#include<bits/stdc++.h>
-#define ull unsigned long long
-#define ll long long
-#define mod 1000000007
-#define endl "\n"
+#include<cstring>
+#include <iostream>
+#include <vector>
 using namespace std;
-
-bool visited[1000][1000];
-
-bool validity(int x, int y, int n, int m){
-    if(x>=0 && x<n && y>=0 && y<m){
-        return true;
-    }
-
-    return false;
+bool valid(int x,int y,int n,int m){
+    return (x>=0&&x<n&&y>=0&&y<m); 
+}
+bool helper(vector<vector<char>> &board,vector<vector<bool>> &used,string &s,int x,int y,int index, int n,int m) {
+    if(index==11) return true;
+    used[x][y]=true;
+    bool found=false;
+    int a[8][2]={{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{+1,-0},{1,1}};
+             for(int i=0;i<8;i++){
+                 int newx=x+a[i][0];
+                int newy=y+a[i][1];
+                 if(valid(newx,newy,n,m)&&board[newx][newy]==s[index]&&!used[newx][newy]){
+                    found=found|helper(board,used,s,newx,newy,index+1,n,m);
+                 }}
+    used[x][y]=false;
+    return found;
+}
+bool hasPath(vector<vector<char>> &board, int n, int m) {
+    bool found=false;
+    string s="CODINGNINJA";
+    vector<vector<bool>> used(n,vector<bool>(m,false));
+    int i,j;
+    for(i=0;i<n;i++){
+     for(j=0;j<m;j++){
+         if(board[i][j]==s[0]){
+             found=helper(board,used,s,i,j,1,n,m);
+             if(found) break;
+         }
+     } if(found) break;
+    } return found;
 }
 
-bool findingNinjas(char** charmatrix, int x, int y, int n,int m, string refer, int index){
-    if(!visited[x][y]){
-        visited[x][y]=1;
-    }
-    if(index==(refer.size()-1) && charmatrix[x][y]==refer[index]){
-        return true;
-    }
 
-
-    if(validity(x-1,y,n,m) && charmatrix[x-1][y]==refer[index+1] && index<refer.size() && !visited[x-1][y]){
-        bool check=findingNinjas(charmatrix,x-1,y,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x-1,y+1,n,m) && charmatrix[x-1][y+1]==refer[index+1] && index<refer.size() && !visited[x-1][y+1]){
-        bool check=findingNinjas(charmatrix,x-1,y+1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x,y+1,n,m) && charmatrix[x][y+1]==refer[index+1] && index<refer.size() && !visited[x][y+1]){
-        bool check=findingNinjas(charmatrix,x,y+1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x+1,y+1,n,m) && charmatrix[x+1][y+1]==refer[index+1] && index<refer.size() && !visited[x+1][y+1]){
-        bool check=findingNinjas(charmatrix,x+1,y+1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x+1,y,n,m) && charmatrix[x+1][y]==refer[index+1] && index<refer.size() && !visited[x+1][y]){
-        bool check=findingNinjas(charmatrix,x+1,y,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x+1,y-1,n,m) && charmatrix[x+1][y-1]==refer[index+1] && index<refer.size() && !visited[x+1][y-1]){
-        bool check=findingNinjas(charmatrix,x+1,y-1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x,y-1,n,m) && charmatrix[x][y-1]==refer[index+1] && index<refer.size() && !visited[x][y-1]){
-        bool check=findingNinjas(charmatrix,x,y-1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-    if(validity(x-1,y-1,n,m) && charmatrix[x-1][y-1]==refer[index+1] && index<refer.size() && !visited[x-1][y-1]){
-        bool check=findingNinjas(charmatrix,x-1,y-1,n,m,refer,index+1);
-        if(check){
-            return true;
-        }
-    }
-
-    return false;
-}
-
-int main(){
-    int t;
-    cin>>t;
+int main() {
+    int t;cin>>t;
     while(t--){
-        int n,m;
-        cin>>n>>m;
-        char** charmatrix= new char*[n];
-        for(int i=0;i<n;i++){
-            charmatrix[i]= new char[m];
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<char>> board(n, vector<char>(m));
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            cin >> board[i][j];
         }
-
-        for(int i=0;i<n;i++){
-            string s;
-            cin>>s;
-            for(int j=0;j<m;j++){
-                charmatrix[i][j]=s[j];
-            }
-        }
-
-        string refer= "CODINGNINJA";
-        bool ans=false;
-        bool goOut=false;
-
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
-                if(charmatrix[i][j]==refer[0]){
-                    ans= findingNinjas(charmatrix,i,j,n,m,refer,0);
-                    if(ans){
-                        cout<<"1"<<endl;
-                        goOut=true;
-                        break;
-                    }
-                    memset(visited,0,sizeof(visited));
-                }
-            }
-
-            if(goOut){
-                break;
-            }
-        }
-
-        if(!ans){
-            cout<<"0"<<endl;
-        }
-
-        for(int i=0;i<n;i++){
-            delete [] charmatrix[i];
-        }
-
-        delete [] charmatrix;
-
-
-
     }
+
+    cout << (hasPath(board, n, m) ? 1 : 0)<<endl;}
 }
