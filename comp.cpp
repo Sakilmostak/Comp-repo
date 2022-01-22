@@ -1,67 +1,74 @@
-#include<cstring>
-#include <iostream>
-#include <vector>
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define mod 1000000007
+#define endl "\n"
 using namespace std;
 
-int count_cycles(int** arr, int n)
-{
-	int count = 0;
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			if (i != j && arr[i][j]==1)
-			{
-				for (int k = 0; k < n; k++)
-				{
-					if (j != k && k != i && arr[j][k]==1)
-					{
-						if (arr[i][k] == 1)
-						{
-							count += 1;
-						}
-					}
-				}
-			}
-		}
+// Union Find Algorithm to detect cycle in the graph
+bool UnionFindAlgo(int* parent,int n,int u,int v){
+	
+	int fparent=parent[u];
+	while(parent[fparent]!=fparent){
+		fparent=parent[fparent];
 	}
-	return count;
-}
-int solve(int n,int m,vector<int>u,vector<int>v)
-{
-	int** arr = new int* [n];
-	for (int i = 0; i < n; i++)
-	{
-		arr[i] = new int[n];
-		for (int j = 0; j < n; j++)
-		{
-			arr[i][j] = 0;
-		}
+	int sparent=parent[v];
+	while(parent[sparent]!=sparent){
+		sparent=parent[sparent];
 	}
-	for (int i = 0; i < m; i++)
-	{
-		arr[u[i]-1][v[i]-1] = 1;
-		arr[v[i]-1][u[i]-1] = 1;
+
+	if(fparent!=sparent){
+		int parentval=min(fparent,sparent);
+		parent[fparent]=parentval;
+		parent[sparent]=parentval;
+		return true;
 	}
-	return count_cycles(arr, n)/6;
+
+	return false;
 }
 
+class edge{
+	public:
+	int u,v,weight;
+};
 
+bool comp(edge a,edge b){
+	return a.weight<b.weight;
+}
 
 int main(){
-    int n,m;
-    cin>>n>>m;
-    vector<int> u(m);
-    vector<int> v(m);
-    for(int i=0;i<m;i++){
-        cin>>u[i];
-    }
+	int t;
+	cin>>t;
+	while(t--){
+		int n,e;
+		cin>>n>>e;
 
-    for(int i=0;i<m;i++){
-        cin>>v[i];
-    }
+		edge edges[e];
+		for(int i=0;i<e;i++){
+			cin>>edges[i].u>>edges[i].v>>edges[i].weight;
+		}
 
-    int ans= solve(n,m,u,v);
-    cout<<ans<<endl;
+		sort(edges,edges+e,comp);
 
+		int* parent= new int[n];
+		for(int i=0;i<n;i++){
+			parent[i]=i;
+		}
+
+		int count=0;
+		ll ans=0LL;
+		for(int i=0;i<e;i++){
+			if(UnionFindAlgo(parent,n,edges[i].u,edges[i].v)){
+				count++;
+				ans+=edges[i].weight;
+			}
+			if(count==n-1){
+				break;
+			}
+		}
+
+		cout<<ans<<endl;
+
+
+	}
 }
