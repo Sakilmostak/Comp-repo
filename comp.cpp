@@ -2,52 +2,66 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-bool valid(int x,int y,int n,int m){
-    return (x>=0&&x<n&&y>=0&&y<m); 
+
+int count_cycles(int** arr, int n)
+{
+	int count = 0;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (i != j && arr[i][j]==1)
+			{
+				for (int k = 0; k < n; k++)
+				{
+					if (j != k && k != i && arr[j][k]==1)
+					{
+						if (arr[i][k] == 1)
+						{
+							count += 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	return count;
 }
-bool helper(vector<vector<char>> &board,vector<vector<bool>> &used,string &s,int x,int y,int index, int n,int m) {
-    if(index==11) return true;
-    used[x][y]=true;
-    bool found=false;
-    int a[8][2]={{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{+1,-0},{1,1}};
-             for(int i=0;i<8;i++){
-                 int newx=x+a[i][0];
-                int newy=y+a[i][1];
-                 if(valid(newx,newy,n,m)&&board[newx][newy]==s[index]&&!used[newx][newy]){
-                    found=found|helper(board,used,s,newx,newy,index+1,n,m);
-                 }}
-    used[x][y]=false;
-    return found;
-}
-bool hasPath(vector<vector<char>> &board, int n, int m) {
-    bool found=false;
-    string s="CODINGNINJA";
-    vector<vector<bool>> used(n,vector<bool>(m,false));
-    int i,j;
-    for(i=0;i<n;i++){
-     for(j=0;j<m;j++){
-         if(board[i][j]==s[0]){
-             found=helper(board,used,s,i,j,1,n,m);
-             if(found) break;
-         }
-     } if(found) break;
-    } return found;
+int solve(int n,int m,vector<int>u,vector<int>v)
+{
+	int** arr = new int* [n];
+	for (int i = 0; i < n; i++)
+	{
+		arr[i] = new int[n];
+		for (int j = 0; j < n; j++)
+		{
+			arr[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < m; i++)
+	{
+		arr[u[i]-1][v[i]-1] = 1;
+		arr[v[i]-1][u[i]-1] = 1;
+	}
+	return count_cycles(arr, n)/6;
 }
 
 
-int main() {
-    int t;cin>>t;
-    while(t--){
-    int n, m;
-    cin >> n >> m;
 
-    vector<vector<char>> board(n, vector<char>(m));
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            cin >> board[i][j];
-        }
+int main(){
+    int n,m;
+    cin>>n>>m;
+    vector<int> u(m);
+    vector<int> v(m);
+    for(int i=0;i<m;i++){
+        cin>>u[i];
     }
 
-    cout << (hasPath(board, n, m) ? 1 : 0)<<endl;}
+    for(int i=0;i<m;i++){
+        cin>>v[i];
+    }
+
+    int ans= solve(n,m,u,v);
+    cout<<ans<<endl;
+
 }
