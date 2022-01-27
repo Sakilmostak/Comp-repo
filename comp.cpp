@@ -16,7 +16,7 @@ int findMinDistIndex(bool* visited,int* dist, int n){
 	return index;
 }
 
-void prims(int** adjgraph,int n){
+void dijkastra(int** adjgraph,int n){
 	int* dist= new int[n];
 	bool* visited= new bool[n]();
 	for(int i=0;i<n;i++){
@@ -57,6 +57,6 @@ int main(){
 			adjgraph[e2][e1]=weight;
 		}
 
-		prims(adjgraph,n);
+		dijkastra(adjgraph,n);
 	}
 }
