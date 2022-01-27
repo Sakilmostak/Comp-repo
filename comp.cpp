@@ -5,88 +5,95 @@
 #define endl "\n"
 using namespace std;
 
-// Algo to find minimum weighted vertex which is not 
-int findMinVert(bool* visited,int* weight, int n){
-	int minVertex=-1;
-	for(int i=0;i<n;i++){
-		if(!visited[i] && (minVertex==-1 || weight[minVertex]>weight[i])){
-			minVertex=i;
+/*Disjoint Set Union Method is better than Union Find algo in Kruskal's Algorithm.
+  With the help of tree, Union Rank and Path Compression the complexity is reduced from O(E*V) 
+  to O(E*log(V)) for Kruskals
+*/
+
+//Tree structure for DSN
+class DSNode{
+	public:
+	int data;
+	DSNode* parent;
+	int rank;
+};
+
+class DisjointSet{
+	private:
+	map<int,DSNode*> hash;
+
+	DSNode* searchInSetHelper(DSNode* node){
+		if(node == node->parent){
+			return node;
 		}
+
+		// Path Compression
+		node->parent = searchInSetHelper(node->parent);
+		return node->parent;
 	}
 
-	return minVertex;
+	public:
 
-}
-
-//prim's algo to find MST
-int prims(int** adjgraph, int n){
-	bool* visited= new bool[n];
-	int* parent= new int[n];
-	int* weight= new int[n];
-
-	for(int i=0;i<n;i++){
-		weight[i]=INT_MAX;
+	void initializeSet(int data){
+		DSNode* node = new DSNode();
+		node->data= data;
+		node->parent= node;
+		node->rank= 0;
+		hash[data]= node;
 	}
 
-	weight[0]=0;
-	parent[0]=-1;
+	void Union(int data1,int data2){
+		DSNode* node1= hash[data1];
+		DSNode* node2= hash[data2];
 
-	for(int i=0;i<n-1;i++){
-		int minVertex= findMinVert(visited,weight,n);
-		visited[minVertex]=true;
-		for(int j=0;j<n;j++){
-			if(adjgraph[minVertex][j]!=0 && !visited[j]){
-				if(weight[j]>adjgraph[minVertex][j]){
-					weight[j]=adjgraph[minVertex][j];
-					parent[j]=minVertex;
-				}
+		DSNode* parent1= searchInSetHelper(node1);
+		DSNode* parent2= searchInSetHelper(node2);
+
+		//Union Ranking
+		if(parent1->data==parent2->data){
+			return;
+		}
+
+		if(parent1->rank>=parent2->rank){
+
+			if(parent1->rank==parent2->rank){
+				parent1->rank= parent2->rank+1;
 			}
+			
+			parent2->parent=parent1;
+		}
+		else{
+			parent1->parent=parent2;
 		}
 	}
 
-	int totalsum=0;
-
-	for(int i=1;i<n;i++){
-		totalsum+=weight[i];
+	int searchInSet(int data){
+		return searchInSetHelper(hash[data])->data;
 	}
-
-	delete[] parent;
-	delete[] weight;
-	delete[] visited;
-
-	return totalsum;
-}
+};
 
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		int n,e;
-		cin>>n>>e;
-		int** adjgraph= new int*[n];
-		for(int i=0;i<n;i++){
-			adjgraph[i]=new int[n];
-			for(int j=0;j<n;j++){
-				adjgraph[i][j]=0;
-			}
-		}
+	DisjointSet ds;
+	ds.initializeSet(0);
+	ds.initializeSet(1);
+	ds.initializeSet(2);
+	ds.initializeSet(3);
+	ds.initializeSet(4);
+	ds.initializeSet(5);
+	ds.initializeSet(6);
 
-		for(int i=0;i<e;i++){
-			int u,v,weight;
-			cin>>u>>v>>weight;
-            
-			adjgraph[u][v]=weight;
-			adjgraph[v][u]=weight;
+	ds.Union(0,1);
+	ds.Union(1,2);
+	ds.Union(3,4);
+	ds.Union(2,4);
+	ds.Union(5,6);
+	ds.Union(4,6);
 
-		}
-        
-		int ans=prims(adjgraph,n);
-		cout<<ans<<endl;
-		
-		for(int i=0;i<n;i++){
-			delete[] adjgraph[i];
-		}
-
-		delete[] adjgraph;
-		}
+	cout<<ds.searchInSet(0)<<endl;
+	cout<<ds.searchInSet(1)<<endl;
+	cout<<ds.searchInSet(2)<<endl;
+	cout<<ds.searchInSet(3)<<endl;
+	cout<<ds.searchInSet(4)<<endl;
+	cout<<ds.searchInSet(5)<<endl;
+	cout<<ds.searchInSet(6)<<endl;
 }
