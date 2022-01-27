@@ -5,95 +5,58 @@
 #define endl "\n"
 using namespace std;
 
-/*Disjoint Set Union Method is better than Union Find algo in Kruskal's Algorithm.
-  With the help of tree, Union Rank and Path Compression the complexity is reduced from O(E*V) 
-  to O(E*log(V)) for Kruskals
-*/
-
-//Tree structure for DSN
-class DSNode{
-	public:
-	int data;
-	DSNode* parent;
-	int rank;
-};
-
-class DisjointSet{
-	private:
-	map<int,DSNode*> hash;
-
-	DSNode* searchInSetHelper(DSNode* node){
-		if(node == node->parent){
-			return node;
+int findMinDistIndex(bool* visited,int* dist, int n){
+	int index=-1;
+	for(int i=0;i<n;i++){
+		if(!visited[i] && (index==-1 || dist[i]<dist[index])){
+			index=i;
 		}
-
-		// Path Compression
-		node->parent = searchInSetHelper(node->parent);
-		return node->parent;
 	}
 
-	public:
+	return index;
+}
 
-	void initializeSet(int data){
-		DSNode* node = new DSNode();
-		node->data= data;
-		node->parent= node;
-		node->rank= 0;
-		hash[data]= node;
+void prims(int** adjgraph,int n){
+	int* dist= new int[n];
+	bool* visited= new bool[n]();
+	for(int i=0;i<n;i++){
+		dist[i]=INT_MAX;
 	}
-
-	void Union(int data1,int data2){
-		DSNode* node1= hash[data1];
-		DSNode* node2= hash[data2];
-
-		DSNode* parent1= searchInSetHelper(node1);
-		DSNode* parent2= searchInSetHelper(node2);
-
-		//Union Ranking
-		if(parent1->data==parent2->data){
-			return;
-		}
-
-		if(parent1->rank>=parent2->rank){
-
-			if(parent1->rank==parent2->rank){
-				parent1->rank= parent2->rank+1;
+	dist[0]=0;
+	
+	for(int i=0;i<n-1;i++){
+		int minDistIndex= findMinDistIndex(visited,dist,n);
+		visited[minDistIndex]=1;
+		for(int j=0;j<n;j++){
+			if(adjgraph[minDistIndex][j]!=0 && !visited[j] && dist[minDistIndex]+adjgraph[minDistIndex][j]<dist[j]){
+				dist[j]=dist[minDistIndex]+adjgraph[minDistIndex][j];
 			}
-			
-			parent2->parent=parent1;
-		}
-		else{
-			parent1->parent=parent2;
 		}
 	}
 
-	int searchInSet(int data){
-		return searchInSetHelper(hash[data])->data;
+	for(int i=0;i<n;i++){
+		cout<<i<<" "<<dist[i]<<endl;
 	}
-};
+}
 
 int main(){
-	DisjointSet ds;
-	ds.initializeSet(0);
-	ds.initializeSet(1);
-	ds.initializeSet(2);
-	ds.initializeSet(3);
-	ds.initializeSet(4);
-	ds.initializeSet(5);
-	ds.initializeSet(6);
+	int t;
+	cin>>t;
+	while(t--){
+		int n,e;
+		cin>>n>>e;
+		int** adjgraph= new int*[n];
+		for(int i=0;i<n;i++){
+			adjgraph[i]= new int[n]();
+		}
 
-	ds.Union(0,1);
-	ds.Union(1,2);
-	ds.Union(3,4);
-	ds.Union(2,4);
-	ds.Union(5,6);
-	ds.Union(4,6);
+		for(int i=0;i<e;i++){
+			int e1,e2,weight;
+			cin>>e1>>e2>>weight;
+			adjgraph[e1][e2]=weight;
+			adjgraph[e2][e1]=weight;
+		}
 
-	cout<<ds.searchInSet(0)<<endl;
-	cout<<ds.searchInSet(1)<<endl;
-	cout<<ds.searchInSet(2)<<endl;
-	cout<<ds.searchInSet(3)<<endl;
-	cout<<ds.searchInSet(4)<<endl;
-	cout<<ds.searchInSet(5)<<endl;
-	cout<<ds.searchInSet(6)<<endl;
+		prims(adjgraph,n);
+	}
 }
