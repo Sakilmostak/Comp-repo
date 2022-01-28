@@ -5,38 +5,57 @@
 #define endl "\n"
 using namespace std;
 
-int findMinDistIndex(bool* visited,int* dist, int n){
-	int index=-1;
+// Algo to find minimum weighted vertex which is not 
+int findMinVert(bool* visited,int* weight, int n){
+	int minVertex=-1;
 	for(int i=0;i<n;i++){
-		if(!visited[i] && (index==-1 || dist[i]<dist[index])){
-			index=i;
+		if(!visited[i] && (minVertex==-1 || weight[minVertex]>weight[i])){
+			minVertex=i;
 		}
 	}
 
-	return index;
+	return minVertex;
+
 }
 
-void dijkastra(int** adjgraph,int n){
-	int* dist= new int[n];
-	bool* visited= new bool[n]();
+//prim's algo to find MST
+int prims(int** adjgraph, int n){
+	bool* visited= new bool[n];
+	int* parent= new int[n];
+	int* weight= new int[n];
+
 	for(int i=0;i<n;i++){
-		dist[i]=INT_MAX;
+		weight[i]=INT_MAX;
+        visited[i]=0;
 	}
-	dist[0]=0;
-	
+
+	weight[0]=0;
+	parent[0]=-1;
+
 	for(int i=0;i<n-1;i++){
-		int minDistIndex= findMinDistIndex(visited,dist,n);
-		visited[minDistIndex]=1;
+		int minVertex= findMinVert(visited,weight,n);
+		visited[minVertex]=true;
 		for(int j=0;j<n;j++){
-			if(adjgraph[minDistIndex][j]!=0 && !visited[j] && dist[minDistIndex]+adjgraph[minDistIndex][j]<dist[j]){
-				dist[j]=dist[minDistIndex]+adjgraph[minDistIndex][j];
+			if(adjgraph[minVertex][j]!=0 && !visited[j]){
+				if(weight[j]>adjgraph[minVertex][j]){
+					weight[j]=adjgraph[minVertex][j];
+					parent[j]=minVertex;
+				}
 			}
 		}
 	}
 
-	for(int i=0;i<n;i++){
-		cout<<i<<" "<<dist[i]<<endl;
+	int totalsum=0;
+
+	for(int i=1;i<n;i++){
+		totalsum+=weight[i];
 	}
+
+	delete[] parent;
+	delete[] weight;
+	delete[] visited;
+
+	return totalsum;
 }
 
 int main(){
@@ -47,16 +66,39 @@ int main(){
 		cin>>n>>e;
 		int** adjgraph= new int*[n];
 		for(int i=0;i<n;i++){
-			adjgraph[i]= new int[n]();
+			adjgraph[i]=new int[n];
+			for(int j=0;j<n;j++){
+				adjgraph[i][j]=0;
+			}
 		}
 
 		for(int i=0;i<e;i++){
-			int e1,e2,weight;
-			cin>>e1>>e2>>weight;
-			adjgraph[e1][e2]=weight;
-			adjgraph[e2][e1]=weight;
+			int u,v,weight;
+			cin>>u>>v>>weight;
+            
+			if(adjgraph[u][v]==0){
+                adjgraph[u][v]=weight;
+            }
+            else{
+                adjgraph[u][v]=min(adjgraph[u][v],weight);
+            }
+            
+			if(adjgraph[v][u]==0){
+                adjgraph[v][u]=weight;
+            }
+            else{
+                adjgraph[v][u]=min(adjgraph[v][u],weight);
+            }
+
+		}
+        
+		int ans=prims(adjgraph,n);
+		cout<<ans<<endl;
+		
+		for(int i=0;i<n;i++){
+			delete[] adjgraph[i];
 		}
 
-		dijkastra(adjgraph,n);
-	}
+		delete[] adjgraph;
+		}
 }
