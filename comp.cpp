@@ -5,100 +5,92 @@
 #define endl "\n"
 using namespace std;
 
-// Algo to find minimum weighted vertex which is not 
-int findMinVert(bool* visited,int* weight, int n){
-	int minVertex=-1;
-	for(int i=0;i<n;i++){
-		if(!visited[i] && (minVertex==-1 || weight[minVertex]>weight[i])){
-			minVertex=i;
-		}
+bool checklimit(int i, int j,int n){
+	if(i>=0 && i<n && j>=0 && j<n){
+		return true;
 	}
 
-	return minVertex;
-
+	return false;
 }
 
-//prim's algo to find MST
-int prims(int** adjgraph, int n){
-	bool* visited= new bool[n];
-	int* parent= new int[n];
-	int* weight= new int[n];
+int findLargestPcs(char** arr, bool** visited,int n,int i, int j){
+	if(visited[i][j] || arr[i][j]=='0'){
+        return 0;
+    }
+    
+    visited[i][j]=1;
 
-	for(int i=0;i<n;i++){
-		weight[i]=INT_MAX;
-        visited[i]=0;
+	int count=1;
+
+	if(checklimit(i,j+1,n) && !visited[i][j+1] && arr[i][j+1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i,j+1);
+	}
+	if(checklimit(i,j-1,n) && !visited[i][j-1] && arr[i][j-1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i,j-1);
+	}
+	if(checklimit(i+1,j,n) && !visited[i+1][j] && arr[i+1][j]=='1'){
+		count+=findLargestPcs(arr,visited,n,i+1,j);
+	}
+	if(checklimit(i-1,j,n) && !visited[i-1][j] && arr[i][j]=='1'){
+		count+=findLargestPcs(arr,visited,n,i-1,j);
 	}
 
-	weight[0]=0;
-	parent[0]=-1;
-
-	for(int i=0;i<n-1;i++){
-		int minVertex= findMinVert(visited,weight,n);
-		visited[minVertex]=true;
-		for(int j=0;j<n;j++){
-			if(adjgraph[minVertex][j]!=0 && !visited[j]){
-				if(weight[j]>adjgraph[minVertex][j]){
-					weight[j]=adjgraph[minVertex][j];
-					parent[j]=minVertex;
-				}
-			}
-		}
+	/*if(checklimit(i+1,j+1,n) && !visited[i+1][j+1] && arr[i+1][j+1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i+1,j+1);
 	}
-
-	int totalsum=0;
-
-	for(int i=1;i<n;i++){
-		totalsum+=weight[i];
+	if(checklimit(i-1,j-1,n) && !visited[i-1][j-1] && arr[i-1][j-1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i-1,j-1);
 	}
-
-	delete[] parent;
-	delete[] weight;
-	delete[] visited;
-
-	return totalsum;
+	if(checklimit(i+1,j-1,n) && !visited[i+1][j-1] && arr[i+1][j-1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i+1,j-1);
+	}
+	if(checklimit(i-1,j+1,n) && !visited[i-1][j+1] && arr[i-1][j+1]=='1'){
+		count+=findLargestPcs(arr,visited,n,i-1,j+1);
+	}
+    */
+    
+	return count;
 }
 
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int n,e;
-		cin>>n>>e;
-		int** adjgraph= new int*[n];
+		int n;
+		cin>>n;
+		char** arr = new char*[n];
 		for(int i=0;i<n;i++){
-			adjgraph[i]=new int[n];
+			arr[i]= new char[n];
+		}
+
+		for(int i=0;i<n;i++){
+			string s;
+			cin>>s;
 			for(int j=0;j<n;j++){
-				adjgraph[i][j]=0;
+				arr[i][j]=s[j];
 			}
 		}
 
-		for(int i=0;i<e;i++){
-			int u,v,weight;
-			cin>>u>>v>>weight;
-            
-			if(adjgraph[u][v]==0){
-                adjgraph[u][v]=weight;
-            }
-            else{
-                adjgraph[u][v]=min(adjgraph[u][v],weight);
-            }
-            
-			if(adjgraph[v][u]==0){
-                adjgraph[v][u]=weight;
-            }
-            else{
-                adjgraph[v][u]=min(adjgraph[v][u],weight);
-            }
+		bool** visited= new bool*[n];
+		for(int i=0;i<n;i++){
+			visited[i]=new bool[n];
+			for(int j=0;j<n;j++){
+				visited[i][j]=0;
+			}
+		}
 
+		int ans=0;
+
+		for(int i=0;i<n;i++){
+			for(int j=0;j<n;j++){
+				if(!visited[i][j] && arr[i][j]=='1'){
+					int newsize= findLargestPcs(arr,visited,n,i,j);
+					ans=max(newsize,ans);
+				}
+			}
 		}
         
-		int ans=prims(adjgraph,n);
-		cout<<ans<<endl;
-		
-		for(int i=0;i<n;i++){
-			delete[] adjgraph[i];
-		}
 
-		delete[] adjgraph;
-		}
+		cout<<ans<<endl;
+	}
 }
