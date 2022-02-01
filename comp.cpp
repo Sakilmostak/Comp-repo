@@ -5,92 +5,56 @@
 #define endl "\n"
 using namespace std;
 
-bool checklimit(int i, int j,int n){
-	if(i>=0 && i<n && j>=0 && j<n){
-		return true;
-	}
-
-	return false;
-}
-
-int findLargestPcs(char** arr, bool** visited,int n,int i, int j){
-	if(visited[i][j] || arr[i][j]=='0'){
-        return 0;
-    }
-    
-    visited[i][j]=1;
-
-	int count=1;
-
-	if(checklimit(i,j+1,n) && !visited[i][j+1] && arr[i][j+1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i,j+1);
-	}
-	if(checklimit(i,j-1,n) && !visited[i][j-1] && arr[i][j-1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i,j-1);
-	}
-	if(checklimit(i+1,j,n) && !visited[i+1][j] && arr[i+1][j]=='1'){
-		count+=findLargestPcs(arr,visited,n,i+1,j);
-	}
-	if(checklimit(i-1,j,n) && !visited[i-1][j] && arr[i][j]=='1'){
-		count+=findLargestPcs(arr,visited,n,i-1,j);
-	}
-
-	/*if(checklimit(i+1,j+1,n) && !visited[i+1][j+1] && arr[i+1][j+1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i+1,j+1);
-	}
-	if(checklimit(i-1,j-1,n) && !visited[i-1][j-1] && arr[i-1][j-1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i-1,j-1);
-	}
-	if(checklimit(i+1,j-1,n) && !visited[i+1][j-1] && arr[i+1][j-1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i+1,j-1);
-	}
-	if(checklimit(i-1,j+1,n) && !visited[i-1][j+1] && arr[i-1][j+1]=='1'){
-		count+=findLargestPcs(arr,visited,n,i-1,j+1);
-	}
-    */
-    
-	return count;
-}
+class directedEdge{
+	public:
+	int a,b,weight;
+};
 
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int n;
-		cin>>n;
-		char** arr = new char*[n];
-		for(int i=0;i<n;i++){
-			arr[i]= new char[n];
+		int n,m,src,des;
+		cin>>n>>m;
+		cin>>src>>des;
+
+		directedEdge diredge[m];
+
+		for(int i=0;i<m;i++){
+			cin>>diredge[i].a;
+			cin>>diredge[i].b;
+			cin>>diredge[i].weight;
 		}
 
+		int arr[n];
+
 		for(int i=0;i<n;i++){
-			string s;
-			cin>>s;
-			for(int j=0;j<n;j++){
-				arr[i][j]=s[j];
-			}
+			arr[i]= 100001;
 		}
 
-		bool** visited= new bool*[n];
+		arr[src]=0;
 		for(int i=0;i<n;i++){
-			visited[i]=new bool[n];
-			for(int j=0;j<n;j++){
-				visited[i][j]=0;
-			}
-		}
-
-		int ans=0;
-
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				if(!visited[i][j] && arr[i][j]=='1'){
-					int newsize= findLargestPcs(arr,visited,n,i,j);
-					ans=max(newsize,ans);
+			for(int j=0;j<m;j++){
+				if(arr[diredge[j].a]+diredge[j].weight<arr[diredge[j].b]){
+					arr[diredge[j].b]=arr[diredge[j].a]+diredge[j].weight;
 				}
 			}
 		}
-        
 
-		cout<<ans<<endl;
+		bool check=true;
+
+		for(int i=0;i<m;i++){
+			if(arr[diredge[i].a]+diredge[i].weight<arr[diredge[i].b]){
+				check=false;
+			}
+		}
+
+		if(check){
+			cout<<arr[des]<<endl;
+		}
+
+
+
+
 	}
 }
