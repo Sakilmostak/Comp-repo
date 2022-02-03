@@ -1,63 +1,65 @@
-#include<bits/stdc++.h>
-#define ull unsigned long long
-#define ll long long
-#define mod 1000000007
-#define endl "\n"
+#include <iostream>
+#include <vector>
+#include <unordered_set>
 using namespace std;
 
-int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		int n,m;
-		cin>>n>>m;
-		int** adjgraph= new int*[n+1];
-		for(int i=0;i<=n;i++){
-			adjgraph[i]=new int[n+1];
-			for(int j=0;j<=n;j++){
-				adjgraph[i][j]=1e9;
-			}
+void dfs(int start, vector<int>* edges, int n, unordered_set<int>& visited, unordered_set<int> * component) {
+	visited.insert(start);
+	component->insert(start);
+	vector<int>::iterator it = edges[start].begin();
+	for (;it != edges[start].end(); it++) {
+		int i = *it;
+		if (visited.count(i) > 0) {
+			continue;
 		}
-
-		for(int i=0;i<m;i++){
-			int src;
-			int des;
-			int weight;
-			cin>>src>>des>>weight;
-			adjgraph[src][des]=min(adjgraph[src][des],weight);
-			adjgraph[des][src]=min(adjgraph[des][src],weight);
-		}
-
-		//bellman ford algorithm
-		int dist[n+1][n+1];
-		for(int i=0;i<=n;i++){
-			for(int j=0;j<=n;j++){
-				dist[i][j]=adjgraph[i][j];
-			}
-		}
-
-		for(int k=1;k<=n;k++){
-			for(int i=1;i<=n;i++){
-				for(int j=1;j<=n;j++){
-					if(dist[i][k]!=1e9 && dist[k][j]!=1e9 && dist[i][k]+dist[k][j]<dist[i][j]){
-						dist[i][j]=dist[i][k]+dist[k][j];
-					}
-				}
-			}
-		}
-
-		//queries
-		int q;
-		cin>>q;
-		for(int i=0;i<q;i++){
-			int u,v;
-			cin>>u>>v;
-			if(u==v){
-				cout<<0<<endl;
-			}
-			else{
-				cout<<dist[u][v]<<endl;
-			}
-		}
+		dfs(i, edges,n, visited, component);
 	}
 }
+
+unordered_set<unordered_set<int>*>* getComponents(vector<int>* edges, int n) {
+	unordered_set<int> visited;
+	unordered_set<unordered_set<int>*>* output = new unordered_set<unordered_set<int>*>();
+	for (int i = 0; i < n; i++) {
+		if (visited.count(i) == 0) {
+			unordered_set<int> * component = new unordered_set<int>();
+			dfs(i, edges,n, visited, component);
+			output->insert(component);
+		}
+	}
+	return output;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int>* edges = new vector<int>[n];
+	int m;
+	cin >> m;
+	for (int i = 0; i < m; i++) {
+		int j, k;
+		cin >> j >> k;
+		edges[j - 1].push_back(k - 1);
+		edges[k - 1].push_back(j - 1);
+	}
+	unordered_set<unordered_set<int>*>* components = getComponents(edges, n);
+	unordered_set<unordered_set<int>*>::iterator it = components->begin();
+	while (it != components->end()) {
+		unordered_set<int>* component = *it;
+		unordered_set<int>::iterator it2 = component->begin();
+		while (it2 != component->end()) {
+			cout << *it2 + 1 << " ";
+			it2++;
+		}
+		cout << endl;
+		delete component;
+		it++;
+	}
+	delete components;
+	delete edges;
+}
+
+
+
+
+
+
