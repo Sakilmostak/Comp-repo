@@ -1,65 +1,75 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define mod 1000000007
+#define endl "\n"
 using namespace std;
 
-void dfs(int start, vector<int>* edges, int n, unordered_set<int>& visited, unordered_set<int> * component) {
-	visited.insert(start);
-	component->insert(start);
-	vector<int>::iterator it = edges[start].begin();
-	for (;it != edges[start].end(); it++) {
-		int i = *it;
-		if (visited.count(i) > 0) {
-			continue;
+
+// Longest Prefix Suffix for KMP algorithm
+int* getLPS(string pattern){
+	int len=pattern.length();
+	int* lps= new int[len];
+
+	lps[0]=0;
+	int i=1;
+	int j=0;
+
+	while(i<len){
+		if(pattern[i]==pattern[j]){
+			lps[i]=j+1;
+			j++;
+			i++;
 		}
-		dfs(i, edges,n, visited, component);
+		else{
+			if(j!=0){
+				j=lps[j-1];
+			}
+			else{
+				lps[i]=0;
+				i++;
+			}
+		}
 	}
+	return lps;
 }
 
-unordered_set<unordered_set<int>*>* getComponents(vector<int>* edges, int n) {
-	unordered_set<int> visited;
-	unordered_set<unordered_set<int>*>* output = new unordered_set<unordered_set<int>*>();
-	for (int i = 0; i < n; i++) {
-		if (visited.count(i) == 0) {
-			unordered_set<int> * component = new unordered_set<int>();
-			dfs(i, edges,n, visited, component);
-			output->insert(component);
+//KMP algo
+bool KMPSearch(string text,string pattern){
+	int lenText= text.length();
+	int lenPat= pattern.length();
+
+	int i=0;
+	int j=0;
+
+	int* lps= getLPS(pattern);
+	while(i<lenText && j<lenPat){
+		if(text[i]==pattern[j]){
+			i++;
+			j++;
+		}
+		else{
+			if(j!=0){
+				j=lps[j-1];
+			}
+			else{
+				i++;
+			}
 		}
 	}
-	return output;
+	if(j==lenPat){
+		return true;
+	}
+
+	return false;
 }
 
-int main() {
-	int n;
-	cin >> n;
-	vector<int>* edges = new vector<int>[n];
-	int m;
-	cin >> m;
-	for (int i = 0; i < m; i++) {
-		int j, k;
-		cin >> j >> k;
-		edges[j - 1].push_back(k - 1);
-		edges[k - 1].push_back(j - 1);
-	}
-	unordered_set<unordered_set<int>*>* components = getComponents(edges, n);
-	unordered_set<unordered_set<int>*>::iterator it = components->begin();
-	while (it != components->end()) {
-		unordered_set<int>* component = *it;
-		unordered_set<int>::iterator it2 = component->begin();
-		while (it2 != component->end()) {
-			cout << *it2 + 1 << " ";
-			it2++;
-		}
-		cout << endl;
-		delete component;
-		it++;
-	}
-	delete components;
-	delete edges;
+int main(){
+	string text="aslfjiejlamdkjfkessdjhiuewa;lkjidh";
+
+	string pattern="essdjh";
+
+	cout<<KMPSearch(text,pattern)<<endl;
+
+	return 0;
 }
-
-
-
-
-
-
