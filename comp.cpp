@@ -6,70 +6,60 @@
 using namespace std;
 
 
-// Longest Prefix Suffix for KMP algorithm
-int* getLPS(string pattern){
-	int len=pattern.length();
-	int* lps= new int[len];
+void buildZ(int* Z, string str){
+	int l=0,r=0;
 
-	lps[0]=0;
-	int i=1;
-	int j=0;
+	int n= str.length();
+	for(int i=1;i<n;i++){
 
-	while(i<len){
-		if(pattern[i]==pattern[j]){
-			lps[i]=j+1;
-			j++;
-			i++;
+		if(i>r){
+			//i does not lie between l and r
+			// Z for this does not exist
+			l=i;
+			r=i;
+			while(r<n && str[r-l]==str[r]){
+				r++;
+			}
+
+			Z[i]=r-l;
+			r--;
 		}
 		else{
-			if(j!=0){
-				j=lps[j-1];
+			int k= i-l;
+			if(Z[k]<=r-i){
+				// i lies between l and r
+				// Z will exist previously
+				Z[i]=Z[k];
 			}
 			else{
-				lps[i]=0;
-				i++;
+				// Some part of Z is already included
+				// You have to start matching further
+				l=i;
+				while(r<n && str[r-l]==str[r]){
+					r++;
+				}
+				Z[i]=r-l;
+				r--;
 			}
 		}
 	}
-	return lps;
 }
 
-//KMP algo
-bool KMPSearch(string text,string pattern){
-	int lenText= text.length();
-	int lenPat= pattern.length();
-
-	int i=0;
-	int j=0;
-
-	int* lps= getLPS(pattern);
-	while(i<lenText && j<lenPat){
-		if(text[i]==pattern[j]){
-			i++;
-			j++;
-		}
-		else{
-			if(j!=0){
-				j=lps[j-1];
-			}
-			else{
-				i++;
-			}
+void searchString(string text,string pattern){
+	string str= pattern+ "$" +text;
+	int n= str.length();
+	int* Z= new int[n]();
+	buildZ(Z,str);
+	for(int i=0;i<n;i++){
+		if(Z[i]==pattern.length()){
+			cout<<"Patter found at index : "<<i-pattern.length()-1<<endl;
 		}
 	}
-	if(j==lenPat){
-		return true;
-	}
-
-	return false;
 }
 
 int main(){
-	string text="aslfjiejlamdkjfkessdjhiuewa;lkjidh";
-
-	string pattern="essdjh";
-
-	cout<<KMPSearch(text,pattern)<<endl;
-
-	return 0;
+	string text,pattern;
+	cin>>text;
+	cin>>pattern;
+	searchString(text,pattern);
 }
