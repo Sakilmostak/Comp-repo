@@ -5,42 +5,47 @@
 #define endl "\n"
 using namespace std;
 
+int findPalindromic(string s,int n){
+	int ans=0;
+    // for odd palindromic
+	for(int i=0;i<n;i++){
+		int pnum=1;
+		int j=i-1;
+		int k=i+1;
+		while(k<n && j>=0 && s[j]==s[k]){
+			pnum+=1;
+			j--;k++;
+		}
+
+		ans+=pnum;
+	}
+    // for even palindromic
+	for(int i=0;i<n-1;i++){
+		if(s[i]==s[i+1]){
+			int pnum=1;
+			int j=i-1;
+			int k=i+2;
+			while(k<n && j>=0 && s[j]==s[k]){
+				pnum+=1;
+				j--;k++;
+			}
+			ans+=pnum;
+		}
+	}
+
+	return ans;
+}
+
 int main(){
 	int t;
 	cin>>t;
 	while(t--){
+		string s;
+		cin>>s;
 		int n;
-		cin>>n;
-		char** arr = new char*[n];
-		for(int i=0;i<n;i++){
-			arr[i]= new char[n];
-		}
+		n= s.size();
 
-		for(int i=0;i<n;i++){
-			string s;
-			cin>>s;
-			for(int j=0;j<n;j++){
-				arr[i][j]=s[j];
-			}
-		}
-
-		bool** visited= new bool*[n];
-		for(int i=0;i<n;i++){
-			visited[i]=new bool[n];
-			for(int j=0;j<n;i++){
-				visited[i][j]=0;
-			}
-		}
-
-		int ans=0;
-
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;i++){
-                cout<<visited[i][j];
-			}
-            cout<<endl;
-		}
-
+		int ans= findPalindromic(s,n);
 		cout<<ans<<endl;
 	}
 }
