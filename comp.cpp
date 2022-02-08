@@ -5,61 +5,51 @@
 #define endl "\n"
 using namespace std;
 
+int LPS(string s){
+	string newstr;
+	newstr+="$";
+	for(int i=0;i<s.size();i++){
+		newstr=newstr+"#"+s[i];
+	}
+	newstr+="#@";
+	
+	//Manacher's Algorithm
+	int n= newstr.size();
+	int *P= new int[n]();    // initialize to zero
+	int center=0,right=0;
 
-void buildZ(int* Z, string str){
-	int l=0,r=0;
-
-	int n= str.length();
-	for(int i=1;i<n;i++){
-
-		if(i>r){
-			//i does not lie between l and r
-			// Z for this does not exist
-			l=i;
-			r=i;
-			while(r<n && str[r-l]==str[r]){
-				r++;
-			}
-
-			Z[i]=r-l;
-			r--;
+	for(int i=1;i<n-1;i++){
+		int mirror=(2*center) - i;
+		
+		if(i<right){
+			P[i]=min(right-i,P[mirror]);
 		}
-		else{
-			int k= i-l;
-			if(Z[k]<=r-i){
-				// i lies between l and r
-				// Z will exist previously
-				Z[i]=Z[k];
-			}
-			else{
-				// Some part of Z is already included
-				// You have to start matching further
-				l=i;
-				while(r<n && str[r-l]==str[r]){
-					r++;
-				}
-				Z[i]=r-l;
-				r--;
-			}
+
+		while((i+1+P[i])<n && (i-1-P[i])>=0 && newstr[i+1+P[i]]==newstr[i-1-P[i]]){
+			P[i]++;
+		}
+
+		if(i+P[i]>right){
+			center=i;
+			right=i+P[i];
 		}
 	}
-}
 
-void searchString(string text,string pattern){
-	string str= pattern+ "$" +text;
-	int n= str.length();
-	int* Z= new int[n]();
-	buildZ(Z,str);
+	// finding longest palindrome
+	int ans=1;
 	for(int i=0;i<n;i++){
-		if(Z[i]==pattern.length()){
-			cout<<"Patter found at index : "<<i-pattern.length()-1<<endl;
-		}
+		ans=max(ans,P[i]);
 	}
+
+	delete[] P;
+
+	return ans;
+
 }
 
 int main(){
-	string text,pattern;
-	cin>>text;
-	cin>>pattern;
-	searchString(text,pattern);
+	string s;
+	cin>>s;
+	int ans=LPS(s);
+	cout<<ans<<endl;
 }
