@@ -9,54 +9,23 @@ int main(){
 	int t;
 	cin>>t;
 	while(t--){
-		int n,x,y;
-		cin>>n>>x>>y;
-		ll emi=0LL;
-		if(n<=4){
-			if(y<=x){
-				emi=y;
-			}
-			else{
-				emi=x;
-			}
+		int n;
+		cin>>n;
+		ll arr[2*n];
+		for(int i=0;i<2*n;i++){
+			cin>>arr[i];
 		}
-		else if(n>4 && n<=100){
-			int i=n/4;
-			if(n%4!=0){
-				i++;
-			}
-			
-			if(i*y<x){
-				emi=i*y;
-			}
-			else{
-				emi=x;
-			}
+		
+		ll tsum=0LL;
+		for(int i=0;i<2*n;i++){
+			tsum+=arr[i];
 		}
-		else if(n>100){
-			if(y*25<=x){
-				int i=n/4;
-				if(n%4!=0){
-					i++;
-				}
-				emi=i*y;
-			}
-			else{
-				emi=x*(n/100);
-				int i=(n%100)/4;
-				if(n%4!=0){
-					i++;
-				}
-
-				if(i*y<x){
-					emi+= (i*y);
-				}
-				else{
-					emi+=x;
-				}
-			}
+		
+		if(tsum%2==0){
+			cout<<"YES"<<endl;
 		}
-
-		cout<<emi<<endl;
+		else{
+			cout<<"NO"<<endl;
+		}
 	}
 }
