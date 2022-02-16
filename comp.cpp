@@ -5,81 +5,58 @@
 #define endl "\n"
 using namespace std;
 
-bool UnionFindAlgo(int* parent,int n,int u,int v){
-	
-	int fparent=parent[u];
-	while(parent[fparent]!=fparent){
-		fparent=parent[fparent];
-	}
-	int sparent=parent[v];
-	while(parent[sparent]!=sparent){
-		sparent=parent[sparent];
-	}
-
-	if(fparent!=sparent){
-		int parentval=min(fparent,sparent);
-		parent[fparent]=parentval;
-		parent[sparent]=parentval;
-		return true;
-	}
-
-	return false;
-}
-
-class edge{
-	public:
-	int u,v,weight;
-};
-
-bool comp(edge a,edge b){
-	return a.weight<b.weight;
-}
-
 int main(){
-	int n;
-	cin>>n;
-
-	int arr[n];
-	for(int i=0;i<n;i++){
-		cin>>arr[i];
-	}
-
-	int m;
-	cin>>m;
-	edge edges[m+n];
-	for(int i=0;i<m;i++){
-		cin>>edges[i].u;
-		cin>>edges[i].v;
-		int a,b;
-		cin>>a>>b;
-		edges[i].weight= a+b;
-	}
-
-	for(int i=m;i<m+n;i++){
-		edges[i].u=i-m;
-		edges[i].v=n;
-		edges[i].weight= arr[i-m];
-
-	}
-
-	sort(edges,edges+n+m,comp);
-
-	int* parent=new int[n+1];
-	for(int i=0;i<=n;i++){
-		parent[i]=i;
-	}
-
-	int count=0;
-	ll ans=0LL;
-	for(int i=0;i<n+m;i++){
-		if(UnionFindAlgo(parent,n+1,edges[i].u,edges[i].v)){
-			count++;
-			ans+=edges[i].weight;
+	int t;
+	cin>>t;
+	while(t--){
+		int n,x,y;
+		cin>>n>>x>>y;
+		ll emi=0LL;
+		if(n<=4){
+			if(y<=x){
+				emi=y;
+			}
+			else{
+				emi=x;
+			}
 		}
-		if(count==n){
-			break;
+		else if(n>4 && n<=100){
+			int i=n/4;
+			if(n%4!=0){
+				i++;
+			}
+			
+			if(i*y<x){
+				emi=i*y;
+			}
+			else{
+				emi=x;
+			}
 		}
-	}
+		else if(n>100){
+			if(y*25<=x){
+				int i=n/4;
+				if(n%4!=0){
+					i++;
+				}
+				emi=i*y;
+			}
+			else{
+				emi=x*(n/100);
+				int i=(n%100)/4;
+				if(n%4!=0){
+					i++;
+				}
 
-	cout<<ans<<endl;
+				if(i*y<x){
+					emi+= (i*y);
+				}
+				else{
+					emi+=x;
+				}
+			}
+		}
+
+		cout<<emi<<endl;
+	}
 }
