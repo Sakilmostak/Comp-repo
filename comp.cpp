@@ -5,27 +5,24 @@
 #define endl "\n"
 using namespace std;
 
+double champagneTower(int poured, int query_row, int query_glass) {
+        float dp[100][100]={0};
+        dp[0][0]=poured/1.0;
+        for(int i=0;i<100;i++){
+            for(int j=0;j<=i;j++){
+                if(dp[i][j]>1){
+                    dp[i+1][j]+=(dp[i][j]-1)/2;
+                    dp[i+1][j+1]+=(dp[i][j]-1)/2;
+                    dp[i][j]=1.0;
+                }
+            }
+        }
+        
+        return dp[query_row][query_glass];
+        
+    }
+
+
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		int n;
-		cin>>n;
-		ll arr[2*n];
-		for(int i=0;i<2*n;i++){
-			cin>>arr[i];
-		}
-		
-		ll tsum=0LL;
-		for(int i=0;i<2*n;i++){
-			tsum+=arr[i];
-		}
-		
-		if(tsum%2==0){
-			cout<<"YES"<<endl;
-		}
-		else{
-			cout<<"NO"<<endl;
-		}
-	}
+    cout<<champagneTower(6,3,2);
 }

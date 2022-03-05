@@ -5,47 +5,37 @@
 #define endl "\n"
 using namespace std;
 
-int findPalindromic(string s,int n){
-	int ans=0;
-    // for odd palindromic
-	for(int i=0;i<n;i++){
-		int pnum=1;
-		int j=i-1;
-		int k=i+1;
-		while(k<n && j>=0 && s[j]==s[k]){
-			pnum+=1;
-			j--;k++;
-		}
+class check{
+    public:
+    int data, lastval;
+};
 
-		ans+=pnum;
-	}
-    // for even palindromic
-	for(int i=0;i<n-1;i++){
-		if(s[i]==s[i+1]){
-			int pnum=1;
-			int j=i-1;
-			int k=i+2;
-			while(k<n && j>=0 && s[j]==s[k]){
-				pnum+=1;
-				j--;k++;
-			}
-			ans+=pnum;
-		}
-	}
+int multiples[100001];
 
-	return ans;
-}
-
+int deleteAndEarn(vector<int>& nums) {
+        for(int i=0;i<nums.size();i++){
+            multiples[nums[i]]++;
+        }
+        int dp[10001]={0};
+        dp[0]=0;
+        dp[1]=multiples[1]*1;
+        dp[2]=multiples[2]*2;
+        for(int i=3;i<=10000;i++){
+            dp[i]=multiples[i]*i;
+            dp[i]+=max(dp[i-2],dp[i-3]);
+        }
+        
+        return dp[10000];
+        
+    }
 int main(){
-	int t;
-	cin>>t;
-	while(t--){
-		string s;
-		cin>>s;
-		int n;
-		n= s.size();
+    
+    int n;
+    cin>>n;
+    vector<int> v(n);
+    for(int i=0;i<n;i++){
+        cin>>v[i];
+    }
 
-		int ans= findPalindromic(s,n);
-		cout<<ans<<endl;
-	}
+    cout<<deleteAndEarn(v);
 }
