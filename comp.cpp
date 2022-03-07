@@ -5,54 +5,68 @@
 #define endl "\n"
 using namespace std;
 
-double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int n= nums1.size();
-        int m=nums2.size();
-        if(n>m){
-            return findMedianSortedArrays(nums2,nums1);
+int helper(string s,int n){
+    vector<int> v(n);
+    for(int i=0,l=0,r=-1;i<n;i++){
+        int k=(i>r)?1:min(v[l+r-i],r-i+1);
+        while(0<=i-k and i+k<n and s[i-k]==s[i+k])
+            k++;
+        v[i]=k--;
+        if(i+k>r){
+            l=i-k;r=i+k;
         }
-
-        int start=0;
-        int end=n;
-        while(start<=end){
-            int mid= (start+end)/2;
-            int elemrem= (n+m+1)/2 - mid;
-
-            int l1= (mid==0)? INT_MIN: nums1[mid-1];
-            int l2= (elemrem==0)? INT_MIN: nums2[elemrem-1];
-
-            int r1= (mid==n)? INT_MAX: nums1[mid];
-            int r2= (elemrem==m)? INT_MAX: nums2[elemrem];
-
-            if(l1<=r2 && l2<=r1){
-                if((n+m)%2==0){
-                return (max(l1,l2)+min(r1,r2))/2.0;
-                }
-                else{
-                    return max(l1,l2);
-                }
+    }vector<int> v1(n);
+        for(int i=0,l=0,r=-1;i<n;i++){
+        int k=(i>r)?0:min(v1[l+r-i+1],r-i+1);
+        while(0<=i-k-1 and i+k<n and s[i-k-1]==s[i+k])
+            k++;
+        v1[i]=k--;
+            if(i+k>r){
+                l=i-k-1;
+                r=i+k;
             }
-            else if(l1>r2){
-                end=mid-1;
-            }
-            else{
-                start=mid+1;
-            }
-        }
-
-        return 0.0;
-}
-
-int main(){
-    int n,m;
-    cin>>n>>m;
-    vector<int> v1(n),v2(m);
+    }
+	
+	int ans=1;
+	int index=0;
+	int flag=0;  // 0 for odd and 1 for even
+	
     for(int i=0;i<n;i++){
-        cin>>v1[i];
-    }
-    for(int i=0;i<m;i++){
-        cin>>v2[i];
+		if(2*v[i]-1>2*v1[i]){
+			if(2*v[i]-1>ans){
+				ans=2*v[i]-1;
+				index=i;
+				flag=0;
+			}
+		}
+		else{
+			if(2*v1[i]>ans){
+				ans=2*v1[i];
+				index=i;
+				flag=1;
+			}
+		}
     }
 
-    cout<<findMedianSortedArrays(v1,v2);
+	if(flag==0){
+		int sidx= index-(ans/2);
+		int eidx= index+ (ans/2);
+		for(int i=sidx;i<=eidx;i++){
+			cout<<s[i];
+		}
+		cout<<endl;
+	}
+	else if(flag==1){
+		int sidx= (index)-(ans/2);
+		int eidx= index+(ans/2)-1;
+		for(int i=sidx;i<=eidx;i++){
+			cout<<s[i];
+		}
+		cout<<endl;
+	}
+}
+int main(){
+	string s;cin>>s;
+    helper(s,s.size());
+    return 0;
 }
