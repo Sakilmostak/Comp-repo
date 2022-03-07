@@ -5,47 +5,46 @@
 #define endl "\n"
 using namespace std;
 
-string convert(string s, int numRows) {
-        if(numRows<=1){
-            return s;
+int myAtoi(string s) {
+        while(s[0]==' '){
+            s=s.substr(1);
         }
-        string numstr[numRows];
-        for(int i=0;i<numRows;i++){
-            numstr[i]="";
+        long sign=1;
+        if(s[0]=='+'){
+            sign=1;
         }
-        int flag=0;
-        int j=0;
-        for(int i=0;i<s.size();i++){
-            if(flag==0){
-                numstr[j]+=s[i];
-                j++;
-                if(j>numRows-1){
-                    flag=1;
-                    j=numRows-2;
-                }
-            }
-            else if(flag==1){
-                numstr[j]+=s[i];
-                j--;
-                if(j<0){
-                    flag=0;
-                    j=1;
-                }
-            }
+        else if(s[0]=='-'){
+            sign=-1;
         }
         
-        string ans="";
-        for(int i=0;i<numRows;i++){
-            ans+=numstr[i];
+        if(s[0]=='+' || s[0]=='-'){
+            s=s.substr(1);
         }
         
-        return ans;
+        long ans=0L;
+        
+        for(const char c: s)
+        {
+            if(c>='0' && c<='9'){
+                int digit= c-'0';
+                ans=(10*ans)+digit;
+                
+                if(sign*ans<INT_MIN){
+                    return INT_MIN;
+                }
+                if(sign*ans>INT_MAX){
+                    return INT_MAX;
+                }
+            }
+            else{
+                return sign*ans;
+            }
+        } 
+        
+        return sign*ans;
     }
 
 
 int main(){
-	string s;cin>>s;
-	int n;cin>>n;
-    cout<<convert(s,n)<<endl;
-    return 0;
+	cout<<myAtoi("-927419734927298292834");
 }
