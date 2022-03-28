@@ -1,57 +1,45 @@
-class Solution {
-public:
-    int countCollisions(string directions) {
-        int n=directions.size();
-        int dirarr[n];
-        for(int i=0;i<n;i++){
-            if(directions[i]=='L'){
-                dirarr[i]=2;
-            }
-            else if(directions[i]=='R'){
-                dirarr[i]=1;
-            }
-            else if(directions[i]=='S'){
-                dirarr[i]=0;
-            }
-        }
-        
-        int colcount=0;
-        for(int i=0;i<n-1;i++){
-            if(dirarr[i]==1 && dirarr[i+1]==2){
-                colcount+=2;
-                dirarr[i]=0;
-                dirarr[i+1]=0;
-            }
-            else if(dirarr[i]==1 && dirarr[i+1]==0){
-                colcount+=1;
-                dirarr[i]=0;
-                dirarr[i+1]=0;
-            }
-            if(dirarr[i]==0 && dirarr[i+1]==2){
-                colcount+=1;
-                dirarr[i]=0;
-                dirarr[i+1]=0;
-            }
-            if(dirarr[i]==1 && dirarr[i+1]==1){
-                int j=i+1;
-                while(dirarr[j]==1 && j<n-1){
-                    j++;
-                } 
-                
-                if(dirarr[j]==1){
-                    break;
-                }
-                else{
-                    colcount+=(j-i);
-                    if(dirarr[j]==2){
-                        colcount++;
-                    }
-                    i=j-1;
-                    dirarr[j]=0;
-                }
-            }
-        }
-        
-        return colcount;
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define mod 1000000007
+#define endl "\n"
+using namespace std;
+
+int findMSB(ll n){
+    if(n==0){
+        return 0;
     }
-};
+    int ans=0;
+    while(n>0){
+        ans++;
+        n=n/2;
+    }
+
+    return ans;
+}
+
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        cin>>n;
+        ll arr[n];
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
+        }
+
+        ll msbcount[32]={0LL};
+        for(int i=0;i<n;i++){
+            int msb= findMSB(arr[i]);
+            msbcount[msb]++;
+        }
+
+        ll pairs=0LL;
+        for(int i=0;i<32;i++){
+            pairs+=((msbcount[i]*(msbcount[i]-1))/2);
+        }
+
+        cout<<pairs<<endl;
+    }
+}
