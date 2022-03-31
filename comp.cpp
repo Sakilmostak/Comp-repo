@@ -5,41 +5,50 @@
 #define endl "\n"
 using namespace std;
 
-int findMSB(ll n){
-    if(n==0){
-        return 0;
-    }
-    int ans=0;
-    while(n>0){
-        ans++;
-        n=n/2;
-    }
-
-    return ans;
-}
-
 int main(){
     int t;
     cin>>t;
     while(t--){
         int n;
         cin>>n;
-        ll arr[n];
+        string s;
+        cin>>s;
+
+        int op=0;
+        int fidx=0;
+        vector<pair<int,int>> v;
+        bool arr[n];
+
         for(int i=0;i<n;i++){
-            cin>>arr[i];
+            if(s[i]=='0'){
+                arr[i]=0;
+            }
+            else{
+                arr[i]=1;
+            }
+        }
+        for(int i=n-1;i>=0;i--){
+            if(s[i]=='0'){
+                fidx=i;
+                break;
+            }
         }
 
-        ll msbcount[32]={0LL};
-        for(int i=0;i<n;i++){
-            int msb= findMSB(arr[i]);
-            msbcount[msb]++;
+        for(int i=fidx;i>=0;i--){
+            if(arr[i]==1){
+                op++;
+                v.push_back({1,i+1});
+                for(int j=0;j<=i;j++){
+                    arr[j]= !arr[j];
+                }
+            }
         }
 
-        ll pairs=0LL;
-        for(int i=0;i<32;i++){
-            pairs+=((msbcount[i]*(msbcount[i]-1))/2);
+        cout<<op<<endl;
+        for(int i=0;i<v.size();i++){
+            cout<<v[i].first<<" "<<v[i].second<<endl;
         }
+        
 
-        cout<<pairs<<endl;
     }
 }
