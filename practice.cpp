@@ -2,40 +2,36 @@
 #define ull unsigned long long
 #define ll long long
 #define mod 1000000007
-#define endl "\n"
 using namespace std;
 
-class check{
-    public:
-    int data, lastval;
-};
 
-int multiples[100001];
-
-int deleteAndEarn(vector<int>& nums) {
-        for(int i=0;i<nums.size();i++){
-            multiples[nums[i]]++;
+int main()
+{
+    string line;
+    vector<string> v;
+    map<char,int> mp;
+ 
+    while (getline(cin, line))
+    {
+        if (line.empty()) {
+            break;
         }
-        int dp[10001]={0};
-        dp[0]=0;
-        dp[1]=multiples[1]*1;
-        dp[2]=multiples[2]*2;
-        for(int i=3;i<=10000;i++){
-            dp[i]=multiples[i]*i;
-            dp[i]+=max(dp[i-2],dp[i-3]);
-        }
-        
-        return dp[10000];
-        
+        v.push_back(line);
     }
-int main(){
+     
+    for(string i:v){
+        for(char c:i){
+            mp[c]++;
+        }
+    }
     
-    int n;
-    cin>>n;
-    vector<int> v(n);
-    for(int i=0;i<n;i++){
-        cin>>v[i];
+    string str= "covid";
+    int ans=INT_MAX;
+    for(char i: str){
+        ans=min(ans,mp[i]);
     }
-
-    cout<<deleteAndEarn(v);
+    
+    cout<<ans<<endl;
+ 
+    return 0;
 }
