@@ -18,11 +18,25 @@ int main() {
 
     
     test{
-        int n;
-        cin>>n;
-        while(n--){
-            cout<<n<<endl;
+        ll x;
+        cin>>x;
+        
+        bool check=0;
+
+        ll curRange= sqrt(4+x)-2;
+        
+        for(ll i=1;i<=curRange;i++){
+            ll num= x-(2*i);
+            ll deno= i+2;
+            if((num%deno)==0){
+                check=1;
+                break;
+            }
         }
+        
+        if(check) cout<<"YES"<<endl;
+        else cout<<"NO"<<endl;
+        
     }
 
     return 0;
