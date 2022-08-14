@@ -18,24 +18,58 @@ int main() {
 
     
     test{
-        ll x;
-        cin>>x;
-        
-        bool check=0;
+        ll n,x,y;
+        cin>>n>>x>>y;
 
-        ll curRange= sqrt(4+x)-2;
-        
-        for(ll i=1;i<=curRange;i++){
-            ll num= x-(2*i);
-            ll deno= i+2;
-            if((num%deno)==0){
-                check=1;
-                break;
-            }
+        priority_queue<ll,vector<ll>, greater<ll>> pq;
+        for(ll i=0;i<n;i++){
+            ll now;
+            cin>>now;
+            pq.push(now);
         }
         
-        if(check) cout<<"YES"<<endl;
-        else cout<<"NO"<<endl;
+        if(y<=n){
+            for(ll i=0;i<y;i++){
+                ll cur= pq.top();
+                pq.pop();
+                pq.push(cur^x);
+            }
+            
+            for(ll i=0;i<n;i++){
+                cout<<pq.top()<<" ";
+                pq.pop();
+            }
+            cout<<endl;
+        }
+        else{
+            int count=0;
+
+            for(ll i=0;i<n;i++){
+                ll cur= pq.top();
+                pq.pop();
+                pq.push(cur^x);
+                count++;
+                if((cur^x)<cur){
+                    break;
+                }
+            }
+            
+            y-=count;
+            y= y&1;
+            
+            if(y==1){
+                ll cur= pq.top();
+                pq.pop();
+                pq.push(cur^x);
+            }
+    
+            for(ll i=0;i<n;i++){
+                cout<<pq.top()<<" ";
+                pq.pop();
+            }
+            cout<<endl;
+        }
+        
         
     }
 
