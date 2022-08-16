@@ -1,2 +1,2 @@
-YES
-YES
+ The given string is not prime
+ The given string is prime

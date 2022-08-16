@@ -4,7 +4,9 @@
 #define mod 1000000007
 #define endl "\n"
 #define test int t;cin>>t;while(t--)
+#define limit 100000
 using namespace std;
+
 
 
 
@@ -20,42 +22,48 @@ int main() {
 
     
     test{
-        int n;
-        cin>>n;
-        vector<bool> arr(n+1,0);
-        for(int i=2;i<=sqrt(n);i++){
+        string s;
+        cin>>s;
+        vector<bool> arr(limit+1,0);
+        for(int i=2;i<=sqrt(limit);i++){
             if(!arr[i]){
                 
-                for(int j=2*i;j<=n;j+=i){
+                for(int j=2*i;j<=limit;j+=i){
                     arr[j]=1;
                 }
             }
         }
 
-        unordered_map<int,int> mp;
+        // for(int i=0;i<99;i++){
+        //     if(!arr[i]) cout<<i<<endl;
+        // }
 
-        for(int i=2;i<=n;i++){
-            if(!arr[i]){
-                int num=i;
-                while(num){
-                    int digit = num%10;
-                    mp[digit]++;
-                    num/=10;
-                }
+        vector<int> freq(26,0);
+
+        for(int i=0;i<s.size();i++){
+            freq[s[i]-'a']++;
+        }
+
+        bool check= true;
+        int count=0;
+
+        for(int i=0;i<26;i++){
+            if(freq[i]!=0){
+                count++;
+                if(arr[freq[i]]) check=false;
             }
         }
 
-        int ans=-1;
-        int maxy=INT_MIN;
+        if(arr[count]) check=false;
 
-        for(auto it: mp){
-            if(it.second>maxy){
-                maxy=it.second;
-                ans=it.first;
-            }
+        if(check){
+            cout<<" The given string is prime"<<endl;
+        }
+        else{
+            cout<<" The given string is not prime"<<endl;
         }
 
-        cout<<"Highest occuring digit is "<<ans<<" with count "<<maxy<<" times"<<endl;
+        
     }
 
     return 0;
