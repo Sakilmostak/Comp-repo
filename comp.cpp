@@ -6,54 +6,7 @@
 #define test int t;cin>>t;while(t--)
 using namespace std;
 
-bool check(int x,int y,int n,int m){
-    if(x>=0 && x<n && y>=0 && y<m) return true;
-    
-    return false;
-}
 
-void dfs(vector<vector<ll>>& arr, int x, int y, int n, int m,vector<vector<bool>>& visited, unordered_map<ll,ll>& mp){
-    
-    visited[x][y]=1;
-    
-    mp[arr[x][y]]++;
-    
-    int dirX[] = {-1,-1,1,1};
-    int dirY[] = {-1,1,-1,1};
-    
-    for(int i=0;i<4;i++){
-        int newX= x+dirX[i];
-        int newY= y+dirY[i];
-        
-        if(check(newX,newY,n,m) && !visited[newX][newY]){
-            dfs(arr,newX,newY,n,m,visited,mp);
-        }
-    }
-}
-
-bool helper(vector<vector<ll>>& a, vector<vector<ll>>& b, int x, int y, vector<vector<bool>>& visited){
-    
-    unordered_map<ll,ll> mp1,mp2;
-    int n=a.size();
-    int m=a[0].size();
-    
-    dfs(a,x,y,n,m,visited,mp1);
-    
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            visited[i][j]=0;
-        }
-    }
-    
-    dfs(b,x,y,n,m,visited,mp2);
-    
-    for(auto it: mp1){
-        if(mp2[it.first]!=it.second) return true;
-    }
-    
-    return false;
-    
-}
 
 int main() {
 
@@ -67,50 +20,42 @@ int main() {
 
     
     test{
-        int n,m;
-        cin>>n>>m;
-        vector<vector<ll>> a(n,vector<ll>(m));
-        vector<vector<ll>> b(n,vector<ll>(m));
-        
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
-                cin>>a[i][j];
-            }
-        }
-        
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
-                cin>>b[i][j];
-            }
-        }
-        
-        bool ans=false;
-        
-        if(n==1 && m==1){
-            if(a[0][0]!=b[0][0]) ans=true;
-        }
-        else if(n==1 || m==1){
-            for(int i=0;i<n;i++){
-                for(int j=0;j<m;j++){
-                    if(a[i][j]!=b[i][j]){
-                        ans=true;
-                        break;
-                    }
+        int n;
+        cin>>n;
+        vector<bool> arr(n+1,0);
+        for(int i=2;i<=sqrt(n);i++){
+            if(!arr[i]){
+                
+                for(int j=2*i;j<=n;j+=i){
+                    arr[j]=1;
                 }
-                if(ans) break;
             }
         }
-        else{
-            vector<vector<bool>> visited(n,vector<bool>(m,0));
-            
-            ans= helper(a,b,0,0,visited) || helper(a,b,0,1,visited);
-            
+
+        unordered_map<int,int> mp;
+
+        for(int i=2;i<=n;i++){
+            if(!arr[i]){
+                int num=i;
+                while(num){
+                    int digit = num%10;
+                    mp[digit]++;
+                    num/=10;
+                }
+            }
         }
-        
-        
-        
-        if(ans) cout<<"NO"<<endl;
-        else cout<<"YES"<<endl;
+
+        int ans=-1;
+        int maxy=INT_MIN;
+
+        for(auto it: mp){
+            if(it.second>maxy){
+                maxy=it.second;
+                ans=it.first;
+            }
+        }
+
+        cout<<"Highest occuring digit is "<<ans<<" with count "<<maxy<<" times"<<endl;
     }
 
     return 0;
