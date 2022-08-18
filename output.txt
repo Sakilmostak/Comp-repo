@@ -1,1 +1,4 @@
- The given string is not prime
+no
+yes
+yes
+yes

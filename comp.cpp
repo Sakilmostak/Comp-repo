@@ -8,7 +8,11 @@
 using namespace std;
 
 
+int euclidGCD(int a,int b){
+    if(b==0) return a;
 
+    return euclidGCD(b, a%b);
+}
 
 int main() {
 
@@ -21,50 +25,27 @@ int main() {
     #endif
 
     
+
+    
     test{
-        string s;
-        cin>>s;
-        vector<bool> arr(limit+1,0);
-        arr[1]=1;
-        for(int i=2;i<=sqrt(limit);i++){
-            if(!arr[i]){
-                
-                for(int j=2*i;j<=limit;j+=i){
-                    arr[j]=1;
-                }
-            }
-        }
 
-        // for(int i=0;i<99;i++){
-        //     if(!arr[i]) cout<<i<<endl;
-        // }
+        int a,b;
+        cin>>a>>b;
 
-        vector<int> freq(26,0);
+        int gcd= euclidGCD(a,b);
 
-        for(int i=0;i<s.size();i++){
-            freq[s[i]-'a']++;
-        }
+        int toDiv= a/gcd;
 
-        bool check= true;
-        int count=0;
-
-        for(int i=0;i<26;i++){
-            if(freq[i]!=0){
-                count++;
-                if(arr[freq[i]]) check=false;
-            }
-        }
-
-        if(arr[count]) check=false;
-
-        if(check){
-            cout<<" The given string is prime"<<endl;
+        if(b%toDiv==0){
+            cout<<"yes"<<endl;
         }
         else{
-            cout<<" The given string is not prime"<<endl;
+            cout<<"no"<<endl;
         }
-
         
+        
+        
+
     }
 
     return 0;
