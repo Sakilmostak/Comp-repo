@@ -7,11 +7,53 @@
 #define limit 100000
 using namespace std;
 
+class Tree{
+    public:
+    int data;
+    Tree* left;
+    Tree* right;
 
-int euclidGCD(int a,int b){
-    if(b==0) return a;
+    Tree(int data){
+        this->data= data;
+        left=NULL;
+        right=NULL;
+    }
+};
 
-    return euclidGCD(b, a%b);
+void preOrder(Tree* root){
+    if(root==NULL) return;
+
+    cout<<root->data<<" ";
+    preOrder(root->left);
+    preOrder(root->right);
+}
+
+void MorrisTraversal(Tree* root){
+    Tree* cur= root;
+     while(cur!=NULL){
+        if(cur->left==NULL){
+            cout<<cur->data<<" ";
+            cur=cur->right;
+        }
+        else{
+            Tree* rightMost= cur->left;
+            while(rightMost->right && rightMost->right!=cur){
+                rightMost=rightMost->right;
+            }
+
+            if(rightMost->right==NULL){
+                rightMost->right=cur;
+                cout<<cur->data<<" ";
+                cur=cur->left;
+            }
+            if(rightMost->right==cur){
+                rightMost->right=NULL;
+                cur=cur->right;
+            }
+        }
+
+        
+    }
 }
 
 int main() {
@@ -25,28 +67,21 @@ int main() {
     #endif
 
     
+    //         1
+    //        / \
+    //       2   3
+    //     / \  / \
+    //    4  5 6  7
 
-    
-    test{
+    Tree* root = new Tree(1);
+    root->left= new Tree(2);
+    root->right= new Tree(3);
+    root->left->left= new Tree(4);
+    root->left->right= new Tree(5);
+    root->right->left= new Tree(6);
+    root->right->right= new Tree(7);
 
-        int a,b;
-        cin>>a>>b;
-
-        int gcd= euclidGCD(a,b);
-
-        int toDiv= a/gcd;
-
-        if(b%toDiv==0){
-            cout<<"yes"<<endl;
-        }
-        else{
-            cout<<"no"<<endl;
-        }
-        
-        
-        
-
-    }
+    MorrisTraversal(root);
 
     return 0;
 }
