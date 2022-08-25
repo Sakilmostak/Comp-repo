@@ -7,54 +7,55 @@
 #define limit 100000
 using namespace std;
 
-class Tree{
-    public:
-    int data;
-    Tree* left;
-    Tree* right;
+void bubbleSort(vector<int>& arr){
+    int count=0;
 
-    Tree(int data){
-        this->data= data;
-        left=NULL;
-        right=NULL;
+    for(int i=1;i<arr.size();i++){
+        if(arr[i-1]>arr[i]){
+            count++;
+            swap(arr[i-1],arr[i]);
+        }
     }
-};
 
-void preOrder(Tree* root){
-    if(root==NULL) return;
+    if(count==0) return;
 
-    cout<<root->data<<" ";
-    preOrder(root->left);
-    preOrder(root->right);
+    bubbleSort(arr);
 }
 
-void MorrisTraversal(Tree* root){
-    Tree* cur= root;
-     while(cur!=NULL){
-        if(cur->left==NULL){
-            cout<<cur->data<<" ";
-            cur=cur->right;
-        }
-        else{
-            Tree* rightMost= cur->left;
-            while(rightMost->right && rightMost->right!=cur){
-                rightMost=rightMost->right;
-            }
+void insertionSort(vector<int>& arr,int idx){
+    if(idx==arr.size()) return;
 
-            if(rightMost->right==NULL){
-                rightMost->right=cur;
-                cout<<cur->data<<" ";
-                cur=cur->left;
-            }
-            if(rightMost->right==cur){
-                rightMost->right=NULL;
-                cur=cur->right;
-            }
-        }
-
-        
+    int i=idx;
+    while(arr[i]<arr[i-1]){
+        swap(arr[i],arr[i-1]);
+        i--;
     }
+
+    insertionSort(arr,idx+1);
 }
+
+void selectionSort(vector<int>& arr,int idx){
+    if(idx==arr.size()) return;
+
+    int miny=idx;
+    for(int i=idx;i<arr.size();i++){
+        miny = arr[i]<arr[miny]? i : miny;
+    }
+
+    swap(arr[idx],arr[miny]);
+
+    selectionSort(arr,idx+1);
+}
+
+void DtoB(int n){
+    if(n==0) return;
+
+    DtoB(n/2);
+
+    cout<<n%2;
+}
+
+
 
 int main() {
 
@@ -66,22 +67,43 @@ int main() {
     freopen("output.txt", "w", stdout);
     #endif
 
-    
-    //         1
-    //        / \
-    //       2   3
-    //     / \  / \
-    //    4  5 6  7
 
-    Tree* root = new Tree(1);
-    root->left= new Tree(2);
-    root->right= new Tree(3);
-    root->left->left= new Tree(4);
-    root->left->right= new Tree(5);
-    root->right->left= new Tree(6);
-    root->right->right= new Tree(7);
+    int n;
+    cin>>n;
+    vector<int> arr(n);
 
-    MorrisTraversal(root);
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+
+    selectionSort(arr,0);
+    cout<<"Selection Sort: "<<endl;
+    for(int i=0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+
+    insertionSort(arr,0);
+    cout<<"Insertion Sort: "<<endl;
+    for(int i=0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+
+    bubbleSort(arr);
+    cout<<"Bubble Sort: "<<endl;
+    for(int i=0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+
+    // test{
+    //     int n;
+    //     cin>>n;
+
+    //     DtoB(n);
+    //     cout<<endl;
+    // }
 
     return 0;
 }

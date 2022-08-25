@@ -1,1 +1,6 @@
-1 2 4 5 3 6 7 
+Selection Sort: 
+1 2 3 4 5 7 8 
+Insertion Sort: 
+1 2 3 4 5 7 8 
+Bubble Sort: 
+1 2 3 4 5 7 8 
