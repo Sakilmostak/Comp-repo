@@ -7,6 +7,19 @@
 #define limit 100000
 using namespace std;
 
+int minStep(int step, int cur, int target, int count){
+        if(cur==target) return count;
+
+        if(cur>target) return -1;
+
+        int c1= minStep(step+1,cur+step,target,count+1);
+        if(c1!=-1) return c1;
+        int c2= minStep(step+1,cur-step,target,count+1);
+        if(c2!=-1) return c2;
+
+        return -1;
+}
+
 int findTiles(int n, int m){
     if(n<=0 || m<=0) return 0;
     if(n==1 || m==1) return n*m;
@@ -50,9 +63,10 @@ int main() {
 
 
     test{
-        int n,m;
-        cin>>n>>m;
-        cout<<findTiles(n,m)<<endl;
+        int target;
+        cin>>target;
+
+        cout<<minStep(1,0,target,0)<<endl;
     }
 
     return 0;
