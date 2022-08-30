@@ -7,55 +7,36 @@
 #define limit 100000
 using namespace std;
 
-void bubbleSort(vector<int>& arr){
-    int count=0;
+int findTiles(int n, int m){
+    if(n<=0 || m<=0) return 0;
+    if(n==1 || m==1) return n*m;
 
-    for(int i=1;i<arr.size();i++){
-        if(arr[i-1]>arr[i]){
-            count++;
-            swap(arr[i-1],arr[i]);
-        }
-    }
+    int tileSize= log2(min(n,m));
+    tileSize= pow(2,tileSize);
 
-    if(count==0) return;
+    int ans=1;
 
-    bubbleSort(arr);
+    ans+= findTiles(n-tileSize, tileSize);
+    ans+= findTiles(tileSize, m- tileSize);
+    ans+= findTiles(n-tileSize, m-tileSize);
+
+    return ans;
+
 }
 
-void insertionSort(vector<int>& arr,int idx){
-    if(idx==arr.size()) return;
+int findCandy(int candy, int wrap, int aWrap){
 
-    int i=idx;
-    while(arr[i]<arr[i-1]){
-        swap(arr[i],arr[i-1]);
-        i--;
-    }
+    int totalWrap= candy+aWrap;
+    //cout<<totalWrap<<endl;
 
-    insertionSort(arr,idx+1);
+    if(totalWrap<=wrap) return 0;
+
+    candy= (totalWrap)/wrap;
+    aWrap= totalWrap%wrap;
+
+    return candy+findCandy(candy,wrap,aWrap);
+
 }
-
-void selectionSort(vector<int>& arr,int idx){
-    if(idx==arr.size()) return;
-
-    int miny=idx;
-    for(int i=idx;i<arr.size();i++){
-        miny = arr[i]<arr[miny]? i : miny;
-    }
-
-    swap(arr[idx],arr[miny]);
-
-    selectionSort(arr,idx+1);
-}
-
-void DtoB(int n){
-    if(n==0) return;
-
-    DtoB(n/2);
-
-    cout<<n%2;
-}
-
-
 
 int main() {
 
@@ -68,42 +49,11 @@ int main() {
     #endif
 
 
-    int n;
-    cin>>n;
-    vector<int> arr(n);
-
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
+    test{
+        int n,m;
+        cin>>n>>m;
+        cout<<findTiles(n,m)<<endl;
     }
-
-    selectionSort(arr,0);
-    cout<<"Selection Sort: "<<endl;
-    for(int i=0;i<n;i++){
-        cout<<arr[i]<<" ";
-    }
-    cout<<endl;
-
-    insertionSort(arr,0);
-    cout<<"Insertion Sort: "<<endl;
-    for(int i=0;i<n;i++){
-        cout<<arr[i]<<" ";
-    }
-    cout<<endl;
-
-    bubbleSort(arr);
-    cout<<"Bubble Sort: "<<endl;
-    for(int i=0;i<n;i++){
-        cout<<arr[i]<<" ";
-    }
-    cout<<endl;
-
-    // test{
-    //     int n;
-    //     cin>>n;
-
-    //     DtoB(n);
-    //     cout<<endl;
-    // }
 
     return 0;
 }
