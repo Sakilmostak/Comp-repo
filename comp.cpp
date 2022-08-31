@@ -8,31 +8,41 @@
 using namespace std;
 
 int minStep(int step, int cur, int target, int count){
-        if(cur==target) return count;
+    if(cur==target) return count;
 
-        if(cur>target) return -1;
+    if(cur>target) return -1;
 
-        int c1= minStep(step+1,cur+step,target,count+1);
-        if(c1!=-1) return c1;
-        int c2= minStep(step+1,cur-step,target,count+1);
+    int c1= minStep(step+1,cur+step,target,count+1);
+    if(c1!=-1) return c1;
+    int c2= minStep(step+1,cur-step,target,count+1);
 
-        return c2;
-}
+    return c2;
+}  
 
 int minStepOpt(int target){
     int count=0;
     int step=1;
     int cur=0;
-    while(cur+step<=target){
-        cur+=step++;
+    while(true){
+        if(cur<target){
+            cur+=step++;
+        }
+        else if(cur==target){
+            return count;
+        }
+        else{
+            int diff= cur-target;
+            if((diff&1)==0){
+                return count;
+            }
+            else{
+                cur+=step++;
+            }
+        }
         count++;
     }
 
-    if(cur!=target){
-        count+=((target-cur)*2);
-    }
-
-    return count;
+    return -1;
 }
 
 int findTiles(int n, int m){
