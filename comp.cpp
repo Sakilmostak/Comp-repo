@@ -15,9 +15,24 @@ int minStep(int step, int cur, int target, int count){
         int c1= minStep(step+1,cur+step,target,count+1);
         if(c1!=-1) return c1;
         int c2= minStep(step+1,cur-step,target,count+1);
-        if(c2!=-1) return c2;
 
-        return -1;
+        return c2;
+}
+
+int minStepOpt(int target){
+    int count=0;
+    int step=1;
+    int cur=0;
+    while(cur+step<=target){
+        cur+=step++;
+        count++;
+    }
+
+    if(cur!=target){
+        count+=((target-cur)*2);
+    }
+
+    return count;
 }
 
 int findTiles(int n, int m){
@@ -66,7 +81,7 @@ int main() {
         int target;
         cin>>target;
 
-        cout<<minStep(1,0,target,0)<<endl;
+        cout<<minStepOpt(target)<<endl;
     }
 
     return 0;
