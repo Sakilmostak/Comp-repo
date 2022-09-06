@@ -7,73 +7,48 @@
 #define limit 100000
 using namespace std;
 
-int minStep(int step, int cur, int target, int count){
-    if(cur==target) return count;
+pair<int,int> isValid(vector<int> arr, int idx){
+    int n=arr.size()-idx+1;
 
-    if(cur>target) return -1;
-
-    int c1= minStep(step+1,cur+step,target,count+1);
-    if(c1!=-1) return c1;
-    int c2= minStep(step+1,cur-step,target,count+1);
-
-    return c2;
-}  
-
-int minStepOpt(int target){
-    int count=0;
-    int step=1;
-    int cur=0;
-    while(true){
-        if(cur<target){
-            cur+=step++;
-        }
-        else if(cur==target){
-            return count;
-        }
-        else{
-            int diff= cur-target;
-            if((diff&1)==0){
-                return count;
+    for(int i=2;i<n;i++){
+        for(int j=1;j<=i;j++){
+            int a=0;
+            int b=0;
+            for(int k=idx;k<idx+j;k++){
+                b=(10*b)+arr[k];
             }
-            else{
-                cur+=step++;
+            for(int k=idx+j;k<idx+i;k++){
+                a=(10*a)+arr[k];
             }
+
+            int c=0;
+            for(int k=i+idx;k<arr.size();k++){
+                c=(c*10)+arr[k];
+                if(c==a+b){
+                    cout<<c<<" "<<a<<" "<<b<<endl;
+                    return {i+idx,j+idx};
+                }
+                if(c>a+b) break;
+            }
+
         }
-        count++;
     }
 
-    return -1;
+    return {-1,-1};
 }
 
-int findTiles(int n, int m){
-    if(n<=0 || m<=0) return 0;
-    if(n==1 || m==1) return n*m;
+bool findAddSeq(vector<int>& arr){
+    int curIdx=0;
+    int idx=0;
+    while(idx<arr.size()-1){
+        pair<int,int> p= isValid(arr,curIdx);
+        //cout<<p.first<<" "<<p.second<<endl;
+        if(p.first==-1) return false;
+        idx= p.first;
+        curIdx=p.second;
+    }
 
-    int tileSize= log2(min(n,m));
-    tileSize= pow(2,tileSize);
-
-    int ans=1;
-
-    ans+= findTiles(n-tileSize, tileSize);
-    ans+= findTiles(tileSize, m- tileSize);
-    ans+= findTiles(n-tileSize, m-tileSize);
-
-    return ans;
-
-}
-
-int findCandy(int candy, int wrap, int aWrap){
-
-    int totalWrap= candy+aWrap;
-    //cout<<totalWrap<<endl;
-
-    if(totalWrap<=wrap) return 0;
-
-    candy= (totalWrap)/wrap;
-    aWrap= totalWrap%wrap;
-
-    return candy+findCandy(candy,wrap,aWrap);
-
+    return true;
 }
 
 int main() {
@@ -88,11 +63,23 @@ int main() {
 
 
     test{
-        int target;
-        cin>>target;
+        string s;
+        cin>>s;
 
-        cout<<minStepOpt(target)<<endl;
+        vector<int> arr(s.size());
+
+        for(int i=0;i<s.size();i++){
+            arr[i]= s[i]-'0';
+        }
+
+        // auto p = isValid(arr, 1);
+
+        // cout<<p.first<<" "<<p.second<<endl;
+
+        cout<<findAddSeq(arr)<<endl;
     }
+
+
 
     return 0;
 }
