@@ -39,14 +39,14 @@ ll modExp(ll a, ll b, ll c){
 	
 	if(b%2==1){
 	    ll cur= modExp(a,b/2,c);
-	    ll ans= (cur*cur)%mod;
-	    ans= (ans*a)%mod;
+	    ll ans= (cur*cur)%c;
+	    ans= (ans*a)%c;
 	    
 	    return ans;
 	}
 	else{
 	    ll cur= modExp(a,b/2,c);
-	    ll ans= (cur*cur)%mod;
+	    ll ans= (cur*cur)%c;
 	    
 	    return ans;
 	}
@@ -147,46 +147,6 @@ ll nCr(ll n, ll r){
 	return dp[n][r];
 }
 
-ll findMinIdx(vector<pair<ll,ll>>& dist, vector<bool>& visited){
-	int idx=-1;
-	for(int i=1;i<dist.size();i++){
-		if(!visited[i] && (idx==-1 || dist[i].first<dist[idx].first)){
-			idx=i;
-		}
-	}
-
-	return idx;
-}
-
-vector<int> dijkstra(vector<vector<ll>>& edges, int n){
-	vector<pair<ll,ll>> dist(n+1,{INT_MAX,-1});
-	vector<bool> visited(n+1,0);
-	dist[1]={0,-1};
-
-	for(int i=0;i<n-1;i++){
-		ll curIdx= findMinIdx(dist,visited);
-		visited[curIdx]=1;
-		for(auto it: edges){
-			if(it[0]==curIdx){
-				if(dist[curIdx].first+it[2]<dist[it[1]].first){
-					dist[it[1]].first= dist[curIdx].first+it[2];
-					dist[it[1]].second=curIdx;
-				}
-			}
-		}
-	}
-
-	vector<int> ans;
-	int prev=n;
-	while(prev!=-1){
-		ans.push_back(prev);
-		prev=dist[prev].second;
-	}
-
-	reverse(ans.begin(),ans.end());
-
-	return ans;
-}
 
 int findParent(int node, vector<int>& parent){
 	if(parent[node]==node) return node;
@@ -204,53 +164,11 @@ int main(){
     freopen("output.txt", "w", stdout);
     #endif
 
-	int n,q,cmax;
-	cin>>n>>q>>cmax;
+	ll n,m;
+	cin>>n>>m;
 
-	vector<vector<vector<int>>> dp(102,vector<vector<int>>(102,vector<int>(11,0)));
+	ll ans= (modExp(3LL,n,m)-1+m)%m;
 
-	for(int i=0;i<n;i++){
-		int x,y,s;
-		cin>>x>>y>>s;
-		dp[x][y][s]++;
-	}
-
-	for(int i=1;i<=100;i++){
-		for(int j=1;j<=100;j++){
-			for(int k=0;k<=10;k++){
-				dp[i][j][k]+=dp[i][j-1][k];
-			}
-		}
-	}
-
-	for(int i=1;i<=100;i++){
-		for(int j=1;j<=100;j++){
-			for(int k=0;k<=10;k++){
-				dp[j][i][k]+=dp[j-1][i][k];
-			}
-		}
-	}
-	
-
-	while(q--){
-		int time,a,b,c,d;
-		cin>>time>>a>>b>>c>>d;
-		vector<int> cur(11,0);
-		for(int i=0;i<=10;i++){
-			cur[i]= dp[c][d][i]-dp[c][b-1][i]-dp[a-1][d][i]+dp[a-1][b-1][i];
-		}
-		
-		int ans=0;
-		
-		for(int i=cmax;i>=0;i--){
-		    
-		    int val= (i+time)%(cmax+1);
-			ans+=(val*cur[i]);
-
-		}
-		
-		cout<<ans<<endl;
-
-	}
+	cout<<ans<<endl;
 
 }
