@@ -75,20 +75,37 @@ ll modExp(ll a, ll b, ll c){
 	
 	if(b%2==1){
 	    ll cur= modExp(a,b/2,c);
-	    ll ans= (cur*cur)%mod;
-	    ans= (ans*a)%mod;
+	    ll ans= (cur*cur)%c;
+	    ans= (ans*a)%c;
+		ans= (ans+c)%c;
 	    
 	    return ans;
 	}
 	else{
 	    ll cur= modExp(a,b/2,c);
-	    ll ans= (cur*cur)%mod;
+	    ll ans= (cur*cur)%c;
+		ans=(ans+c)%c;
 	    
 	    return ans;
 	}
 
 	
 }
+
+// ll modExp(ll a, ll b, ll md){
+//     ll ans = 1;
+//     while (b)
+//     {
+//         if (b & 1)
+//         {
+//             ans = (__int128)ans * a % md;
+//         }
+//         b >>= 1;
+//         a = (__int128)a * a % md;
+//     }
+//     return ans;
+// }
+
 
 ll factorial(ll n){
 	ll ans=1LL;
@@ -239,6 +256,7 @@ int main(){
     #endif
 
     test{
+		
 
     }
 
