@@ -1,8 +1,8 @@
 #include<bits/stdc++.h> 
-#define ull unsigned long long
-#define ll long long
+typedef long long ll;
+typedef unsigned long long ull;
 #define mod 1000000007
-#define endl "\n"
+#define el "\n"
 #define test int t;cin>>t;while(t--)
 #define limit 100000
 #define setBit(x) __builtin_popcount(x)
@@ -155,53 +155,56 @@ int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-	#ifndef ONLINE_JUDGE
+    #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
     #endif
- 
-    test{
-		ll a,b;
-		cin>>a>>b;
 
-		if(a==1 && b==1){
-			cout<<"Yes"<<endl;
-			continue;
+	test{
+		ll n;
+		cin>>n;
+		vector<ll> arr(n);
+		for(int i=0;i<n;i++) {
+			ll x;
+			cin>>x;
+			arr[i]=x-1;
 		}
 
-		auto p1= findPrimeFact(a);
-		auto p2= findPrimeFact(b);
+		vector<int> parent(n);
+		for(int i=0;i<n;i++) parent[i]=i;
 
-		map<ll,ll> mp1,mp2;
+		vector<int> indeg(n,0);
+		for(int i=0;i<n;i++){
+			indeg[arr[i]]++;
+		}
 
-		for(auto it: p1) mp1[it]++;
-		for(auto it: p2) mp2[it]++;
+		for(int i=0;i<n;i++){
+			int c1= findParent(parent[i],parent);
+			int c2= findParent(parent[arr[i]],parent);
 
-
-
-		bool ans= true;
-		for(auto it: mp1){
-			ll diff= fabs(it.second-mp2[it.first]);
-			ll miny= min(it.second,mp2[it.first]);
-
-			if(miny-diff<0 || (miny-diff)%3!=0){
-				ans=false;
-				break;
+			if(c1!=c2){
+				parent[c1]=min(c1,c2);
+				parent[c2]=min(c1,c2);
 			}
 		}
 
-		for(auto it: mp2){
-			ll diff= fabs(it.second-mp1[it.first]);
-			ll miny= min(it.second,mp1[it.first]);
+		map<int,int> mp;
 
-			if(miny-diff<0 || (miny-diff)%3!=0){
-				ans=false;
-				break;
-			}
+		for(int i=0;i<n;i++){
+			int cur= findParent(i,parent);
+			if(indeg[i]!=1) mp[cur]=2;
+			else if(!mp.count(cur)) mp[cur]=1;
+			
 		}
 
-		if(ans) cout<<"Yes"<<endl;
-		else cout<<"No"<<endl;
+		int count=0;
+		for(auto it: mp){
+			if(it.first==2) count++;
+		}
+
+		cout<<count<<" "<<mp.size()<<endl;
+
 	}
 
+	
 }
